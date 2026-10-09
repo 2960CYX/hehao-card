@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { nextTick, ref, watch } from 'vue'
+import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import SignaturePad from './SignaturePad.vue'
 import type { InkStroke } from '../signature'
 
@@ -20,16 +20,26 @@ const emit = defineEmits<{
 
 const padRef = ref<InstanceType<typeof SignaturePad> | null>(null)
 const empty = ref(true)
+const isPortrait = ref(true)
 let demoTimers: number[] = []
+
+function updateOrientation() {
+  isPortrait.value = window.innerHeight >= window.innerWidth
+}
+
+function clearDemoTimers() {
+  demoTimers.forEach((t) => window.clearTimeout(t))
+  demoTimers = []
+}
 
 watch(
   () => props.open,
   async (open) => {
-    demoTimers.forEach((t) => window.clearTimeout(t))
-    demoTimers = []
+    clearDemoTimers()
     if (!open) return
 
     await nextTick()
+    updateOrientation()
     // 把已有的笔迹带进来，方便继续修改
     padRef.value?.setStrokes(props.strokes)
     empty.value = props.strokes.length === 0
@@ -40,6 +50,18 @@ watch(
     }
   }
 )
+
+onMounted(() => {
+  updateOrientation()
+  window.addEventListener('resize', updateOrientation)
+  window.addEventListener('orientationchange', updateOrientation)
+})
+
+onBeforeUnmount(() => {
+  clearDemoTimers()
+  window.removeEventListener('resize', updateOrientation)
+  window.removeEventListener('orientationchange', updateOrientation)
+})
 
 function clearAll() {
   padRef.value?.clear()
@@ -75,6 +97,14 @@ function close() {
 
           <div class="sign-board">
             <SignaturePad ref="padRef" fill @update:empty="empty = $event" />
+
+            <!-- 竖屏时提示横过来：签名的瓶颈是宽度，横屏能拿到 2 倍以上的书写宽度 -->
+            <Transition name="fade">
+              <p v-if="isPortrait && empty" class="sign-rotate">
+                <span class="sign-rotate-icon" aria-hidden="true">↻</span>
+                把手机横过来写，签名区会宽很多
+              </p>
+            </Transition>
           </div>
 
           <div class="sign-actions">
@@ -107,7 +137,7 @@ function close() {
   display: flex;
   flex-direction: column;
   width: 100%;
-  max-width: 760px;
+  max-width: 900px;
   height: 100%;
   margin: 0 auto;
   min-height: 0;
@@ -154,7 +184,7 @@ function close() {
   background: rgba(255, 255, 255, 0.16);
 }
 
-/* 白板占满剩余空间 —— 手机上能拿到最大的一块书写区 */
+/* 白板占满剩余空间 —— 竖屏拿到最大高度，横屏拿到最大宽度 */
 .sign-board {
   position: relative;
   flex: 1 1 auto;
@@ -164,6 +194,44 @@ function close() {
   box-shadow:
     0 24px 60px -24px rgba(0, 0, 0, 0.9),
     0 0 0 1px rgba(232, 201, 106, 0.22);
+}
+
+.sign-rotate {
+  position: absolute;
+  left: 50%;
+  bottom: 14px;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin: 0;
+  padding: 8px 15px;
+  border-radius: 999px;
+  white-space: nowrap;
+  font-size: 12px;
+  color: #6a5946;
+  background: rgba(255, 253, 248, 0.92);
+  box-shadow: 0 8px 22px -10px rgba(90, 66, 20, 0.7);
+  pointer-events: none;
+}
+
+.sign-rotate-icon {
+  font-size: 16px;
+  line-height: 1;
+  color: #a97c15;
+  animation: rotateHint 2.4s ease-in-out infinite;
+}
+
+@keyframes rotateHint {
+  0%,
+  45%,
+  100% {
+    transform: rotate(0deg);
+  }
+  60%,
+  85% {
+    transform: rotate(90deg);
+  }
 }
 
 .sign-actions {
@@ -178,5 +246,45 @@ function close() {
 
 .sign-actions .btn-primary {
   flex: 1.4 1 0;
+}
+
+/* ---------------- 横屏：把高度尽量留给书写区 ---------------- */
+@media (orientation: landscape) {
+  .sign-mask {
+    padding: 8px 12px calc(env(safe-area-inset-bottom, 0px) + 8px);
+  }
+
+  .sign-head {
+    align-items: center;
+    padding: 0 4px 8px;
+  }
+
+  .sign-title {
+    font-size: 14px;
+  }
+
+  /* 横屏空间宝贵，提示语省掉 */
+  .sign-tip {
+    display: none;
+  }
+
+  .sign-close {
+    width: 32px;
+    height: 32px;
+    font-size: 13px;
+  }
+
+  .sign-board {
+    border-radius: 16px;
+  }
+
+  .sign-actions {
+    padding-top: 8px;
+  }
+
+  .sign-actions .btn {
+    min-height: 38px;
+    font-size: 13px;
+  }
 }
 </style>

@@ -38,6 +38,8 @@ let lastTime = 0
 let lastWidthPx = BASE_PX
 let cssW = 1
 let cssH = 1
+/** 上次栅格化时用的宽度（归一化基准）。旋转屏幕时用它把旧笔迹换算过来 */
+let unitRef = 0
 let observer: ResizeObserver | null = null
 
 /* ------------------------------------------------------------ 坐标与绘制 */
@@ -87,6 +89,14 @@ function syncSize() {
   const rect = el.getBoundingClientRect()
   cssW = Math.max(rect.width, 1)
   cssH = Math.max(rect.height, 1)
+
+  // 屏幕旋转 / 窗口变化导致宽度变了：把已有笔迹按比例换算，
+  // 让字保持原来的实际大小，而不是跟着画布一起放大缩小。
+  if (unitRef > 0 && strokes.value.length && Math.abs(cssW - unitRef) / unitRef > 0.02) {
+    const k = unitRef / cssW
+    strokes.value = strokes.value.map((s) => s.map((p) => ({ x: p.x * k, y: p.y * k, w: p.w * k })))
+  }
+  unitRef = cssW
 
   const dpr = Math.min(window.devicePixelRatio || 1, 3)
   const bw = Math.round(cssW * dpr)
@@ -265,9 +275,14 @@ function exportInk(): HTMLCanvasElement {
   return cv
 }
 
-/** 预览模式（?demo=1）用：自动写一段示例签名 */
+/** 预览模式（?demo=1）用：自动写一段示例签名（位置跟着画布比例走） */
 function drawDemo() {
   const unit = cssW
+  // 因为 y 也是除以宽度，画布的"归一化高度"就是 cssH / cssW
+  const hN = cssH / cssW
+  const cy = hN * 0.5
+  const ah = Math.min(hN * 0.3, 0.16)
+
   const push = (points: Array<[number, number]>) => {
     const pts: InkStroke = points.map(([x, y], i) => ({
       x,
@@ -277,32 +292,31 @@ function drawDemo() {
     strokes.value = [...strokes.value, pts]
   }
 
-  // 写在画布偏下的位置，整体横向铺开，接近真实签名的比例
   const wave: Array<[number, number]> = []
   for (let i = 0; i <= 60; i++) {
     const t = i / 60
-    wave.push([0.08 + t * 0.36, 0.72 - Math.sin(t * Math.PI * 1.4) * 0.14 - t * 0.02])
+    wave.push([0.08 + t * 0.34, cy + ah * 0.35 - Math.sin(t * Math.PI * 1.4) * ah])
   }
   push(wave)
 
   const loop: Array<[number, number]> = []
   for (let i = 0; i <= 52; i++) {
     const t = (i / 52) * Math.PI * 2
-    loop.push([0.5 + Math.sin(t) * 0.036 + (i / 52) * 0.07, 0.66 + Math.cos(t) * 0.12])
+    loop.push([0.5 + Math.sin(t) * ah * 0.22 + (i / 52) * 0.07, cy + Math.cos(t) * ah * 0.85])
   }
   push(loop)
 
   const tail: Array<[number, number]> = []
   for (let i = 0; i <= 48; i++) {
     const t = i / 48
-    tail.push([0.63 + t * 0.28, 0.74 - Math.sin(t * Math.PI) * 0.1])
+    tail.push([0.63 + t * 0.28, cy + ah * 0.4 - Math.sin(t * Math.PI) * ah * 0.7])
   }
   push(tail)
 
   const under: Array<[number, number]> = []
   for (let i = 0; i <= 40; i++) {
     const t = i / 40
-    under.push([0.12 + t * 0.72, 0.9 - Math.sin(t * Math.PI) * 0.03])
+    under.push([0.12 + t * 0.72, cy + ah * 1.4 - Math.sin(t * Math.PI) * ah * 0.15])
   }
   push(under)
 
