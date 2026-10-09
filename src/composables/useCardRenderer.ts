@@ -5,6 +5,7 @@ import {
   CARD_TITLE,
   CARD_W,
   HOLDER_NAME,
+  ISSUER_NAME,
   LAYOUT,
   PALETTE,
   TERMS
@@ -13,7 +14,6 @@ import {
 export interface RenderCardOptions {
   serial: string
   dateText: string
-  holder?: string
   /** 签名板导出的透明笔迹图层（见 SignaturePad.exportInk） */
   ink?: HTMLCanvasElement | null
   /** 导出倍率，默认 3 倍（1020 × 1620 px） */
@@ -316,7 +316,7 @@ function drawSignatureBox(ctx: CanvasRenderingContext2D, ink?: HTMLCanvasElement
   ctx.font = `500 ${LAYOUT.sigLabelSize}px ${SANS}`
   ctx.textAlign = 'left'
   ctx.fillStyle = 'rgba(140,116,80,0.78)'
-  ctx.fillText('持卡人签名 / SIGNATURE', x + 9, y + 7)
+  ctx.fillText('签发人签名 / SIGNATURE', x + 9, y + 7)
   ctx.restore()
 
   if (ink) {
@@ -339,7 +339,7 @@ function drawMeta(ctx: CanvasRenderingContext2D, dateText: string) {
   ctx.textAlign = 'right'
   ctx.font = `700 ${LAYOUT.metaSize}px ${SANS}`
   ctx.fillStyle = PALETTE.goldDark
-  ctx.fillText('永久有效', CARD_W - LAYOUT.pad, LAYOUT.metaTop)
+  ctx.fillText(`签发人 ${ISSUER_NAME}`, CARD_W - LAYOUT.pad, LAYOUT.metaTop)
   ctx.restore()
 }
 
@@ -473,7 +473,7 @@ export function renderCard(options: RenderCardOptions): HTMLCanvasElement {
   drawWatermark(ctx)
   drawOrnaments(ctx)
   drawHeader(ctx, options.serial)
-  drawHolder(ctx, options.holder ?? HOLDER_NAME)
+  drawHolder(ctx, HOLDER_NAME)
   drawTerms(ctx)
   drawSignatureBox(ctx, options.ink)
   drawStamp(ctx)

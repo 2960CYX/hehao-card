@@ -5,7 +5,7 @@ import StageCard from './components/StageCard.vue'
 import StageLock from './components/StageLock.vue'
 import StageSuccess from './components/StageSuccess.vue'
 import { useConfetti } from './composables/useConfetti'
-import { formatDateCN, HOLDER_FULL_NAME, HOLDER_NAME, makeSerial } from './cardSpec'
+import { formatDateCN, HOLDER_NAME, ISSUER_FULL_NAME, ISSUER_NAME, makeSerial } from './cardSpec'
 
 type Stage = 'locked' | 'card' | 'done'
 
@@ -86,7 +86,7 @@ onBeforeUnmount(() => {
     </div>
 
     <header class="app-header">
-      <p class="kicker">MADE WITH ♥ FOR {{ HOLDER_NAME }}</p>
+      <p class="kicker">FROM {{ ISSUER_NAME }} · TO {{ HOLDER_NAME }}</p>
       <h1 class="app-title">终极和好卡 · 预支</h1>
       <p class="app-sub">出示此卡，强制无条件终止冷战</p>
     </header>
@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
     </main>
 
     <footer class="app-footer">
-      <p>本卡由「男朋友」签发 · 持卡人 {{ HOLDER_FULL_NAME }} · 有效期：永久</p>
+      <p>签发人 {{ ISSUER_FULL_NAME }} · 持卡人 {{ HOLDER_NAME }} · 有效期：永久</p>
     </footer>
 
     <canvas ref="confettiCanvas" class="confetti-layer" aria-hidden="true" />

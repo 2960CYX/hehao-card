@@ -86,7 +86,7 @@ function confirmSign() {
     <Transition name="slide-up">
       <div v-if="showPad" class="pad-panel">
         <div class="pad-head">
-          <span class="pad-title">✍️ 持卡人签名</span>
+          <span class="pad-title">✍️ 签发人签名</span>
           <span class="pad-tip">手指 / 鼠标直接书写</span>
         </div>
 

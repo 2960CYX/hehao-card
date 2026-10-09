@@ -9,11 +9,14 @@
 export const CARD_W = 340
 export const CARD_H = 540
 
-/** 持卡人昵称（卡片「持卡人」、页头、身份验证正确答案都用这个） */
-export const HOLDER_NAME = '诗诗宝宝'
+/** 持卡人：收下这张卡的人（卡片「持卡人」一栏） */
+export const HOLDER_NAME = '陈宇翔'
 
-/** 持卡人全名（只出现在页脚） */
-export const HOLDER_FULL_NAME = '李诗雪'
+/** 签发人昵称：签这张卡送出去的人（卡片、页头、身份验证正确答案都用这个） */
+export const ISSUER_NAME = '诗诗宝宝'
+
+/** 签发人全名（只出现在页脚） */
+export const ISSUER_FULL_NAME = '李诗雪'
 export const CARD_TITLE = '终极和好卡'
 export const CARD_SUBTITLE = 'ULTIMATE MAKE-UP PASS'
 export const CARD_FOOTNOTE = '本卡最终解释权归宝宝所有 ♥'

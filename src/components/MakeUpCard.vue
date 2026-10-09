@@ -1,9 +1,7 @@
 <script setup lang="ts">
-import { CARD_SUBTITLE, CARD_TITLE, HOLDER_NAME, LAYOUT, TERMS } from '../cardSpec'
+import { CARD_SUBTITLE, CARD_TITLE, HOLDER_NAME, ISSUER_NAME, LAYOUT, TERMS } from '../cardSpec'
 
-withDefaults(defineProps<{ serial: string; issuedAt: string; holder?: string }>(), {
-  holder: HOLDER_NAME
-})
+defineProps<{ serial: string; issuedAt: string }>()
 
 const px = (n: number) => `${n}px`
 </script>
@@ -42,7 +40,7 @@ const px = (n: number) => `${n}px`
 
         <div class="mk-holder" :style="{ top: px(LAYOUT.holderTop) }">
           <span class="mk-holder-label" :style="{ fontSize: px(LAYOUT.holderLabelSize) }">持卡人</span>
-          <span class="mk-holder-name" :style="{ fontSize: px(LAYOUT.holderSize) }">{{ holder }}</span>
+          <span class="mk-holder-name" :style="{ fontSize: px(LAYOUT.holderSize) }">{{ HOLDER_NAME }}</span>
         </div>
         <div class="mk-dotrule" :style="{ top: px(LAYOUT.holderRuleY) }" />
 
@@ -91,14 +89,14 @@ const px = (n: number) => `${n}px`
           }"
         >
           <span class="mk-sig-label" :style="{ fontSize: px(LAYOUT.sigLabelSize) }">
-            持卡人签名 / SIGNATURE
+            签发人签名 / SIGNATURE
           </span>
           <span class="mk-sig-ghost">在此签名</span>
         </div>
 
         <p class="mk-meta" :style="{ top: px(LAYOUT.metaTop), fontSize: px(LAYOUT.metaSize) }">
           <span>签发日期 {{ issuedAt }}</span>
-          <span class="mk-meta-right">永久有效</span>
+          <span class="mk-meta-right">签发人 {{ ISSUER_NAME }}</span>
         </p>
 
         <p class="mk-foot" :style="{ top: px(LAYOUT.footTop), fontSize: px(LAYOUT.footSize) }">

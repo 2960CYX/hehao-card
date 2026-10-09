@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { computed, ref, watch } from 'vue'
-import { HOLDER_NAME } from '../cardSpec'
+import { ISSUER_NAME } from '../cardSpec'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{
@@ -10,7 +10,7 @@ const emit = defineEmits<{
 
 const OPTIONS = [
   { key: 'A', text: '世界上最可爱的宝宝', correct: false },
-  { key: 'B', text: HOLDER_NAME, correct: true }
+  { key: 'B', text: ISSUER_NAME, correct: true }
 ]
 
 const ERROR_TEXT = '身份验证失败，只有宝宝才能解锁哦'
@@ -69,7 +69,7 @@ function choose(option: (typeof OPTIONS)[number]) {
         <div class="dialog-panel" :class="{ 'is-shake': shaking }">
           <div class="dialog-badge">🔒</div>
           <h2 class="dialog-title">身份验证</h2>
-          <p class="dialog-question">请选择卡片持有者的真实身份</p>
+          <p class="dialog-question">你就是要签这张卡的人，对吧？</p>
 
           <div class="dialog-options">
             <button

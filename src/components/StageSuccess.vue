@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { computed, onBeforeUnmount, onMounted, ref } from 'vue'
+import { HOLDER_NAME } from '../cardSpec'
 
 const props = defineProps<{ image: string; serial: string }>()
 const emit = defineEmits<{
@@ -55,7 +56,7 @@ function onSaveClick() {
 
     <p class="success-tip">
       <span aria-hidden="true">📸</span>
-      <span>可长按保存卡片图片或截图发送给男朋友</span>
+      <span>可长按保存卡片图片，或截图发给{{ HOLDER_NAME }}</span>
     </p>
 
     <div class="success-actions">

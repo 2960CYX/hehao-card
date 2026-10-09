@@ -52,7 +52,7 @@
 
         <div class="lock-foot">
           <span>NO. ✱✱✱✱-✱✱✱✱</span>
-          <span>持卡人：？？？</span>
+          <span>签发人：？？？</span>
         </div>
 
         <div class="lock-dots">• • •</div>
