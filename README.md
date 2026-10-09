@@ -1,0 +1,183 @@
+# 终极和好卡 · 预支凭证 💌
+
+一个部署在 **GitHub Pages** 上的情侣互动 H5：把一张「终极和好卡」预支给女朋友，
+三关流程 —— 身份验证 → 卡片条约 → 手写签名 + 盖章生效。
+
+纯前端静态站点，**没有任何后端**，构建产物可以直接丢到任何静态托管上。
+
+## 📸 效果预览
+
+| 第一关 · 身份验证 | 第二关 · 卡片与签名 | 第三关 · 成品卡片 |
+| :---: | :---: | :---: |
+| ![身份验证](docs/preview-1-lock.png) | ![签名](docs/preview-2-sign.png) | ![预支成功](docs/preview-3-card.png) |
+
+---
+
+## ✨ 三关流程
+
+| 关卡 | 内容 |
+| --- | --- |
+| 第一关 · 身份验证 | 卡片初始为**锁定状态**，自动弹出趣味选择题「请选择卡片持有者的真实身份」。选错会抖动并弹窗提示「身份验证失败，只有宝宝才能解锁哦」，选对才解锁。 |
+| 第二关 · 卡片与签名 | 卡片 **3D 翻转入场**，展示烫金卡面与三条条约；底部是 HTML5 Canvas 手写签名板（鼠标 + 手机触摸都支持），提供「重签」「确认签名」。 |
+| 第三关 · 预支成功 | 点击「确认签名」后，用 Canvas 把**手写笔迹**和**「已生效」红色印章**合成绘制到卡片上，触发满屏爱心 + 烟花特效，提示「🎉 预支成功！可长按保存卡片图片或截图发送给男朋友」。 |
+
+卡片条约：
+
+- **随时生效**：出示此卡，强制无条件终止冷战。
+- **附加条款**：使用者需附赠 10 秒钟 Embrace。
+- **预支约束**：需用主动请吃大餐 / 家务还账。
+
+---
+
+## 🧱 技术栈
+
+- **Vue 3**（`<script setup>` + TypeScript）
+- **Vite 6**
+- **UnoCSS**（`presetUno` + `presetAttributify`）
+- **canvas-confetti**（烟花 / 爱心特效）
+- 卡面合成、签名板、印章全部用原生 **Canvas 2D** 手写实现，不依赖 html2canvas 之类的截图库
+
+### 几个实现要点
+
+- **笔迹不失真**：签名板把落笔坐标按 **归一化 0~1** 存储，屏幕旋转、窗口缩放后重放不会变形；
+  导出时再按卡片签名区的实际宽高（`272 × 86`）重绘，所以「屏幕上写的」和「印在卡片上的」完全一致。
+- **笔锋**：根据运笔速度动态改变线宽（写得快更细），更接近真实笔迹。
+- **一套版式两处复用**：`src/cardSpec.ts` 是唯一数据源，DOM 卡面（`MakeUpCard.vue`）
+  和 Canvas 导出图（`useCardRenderer.ts`）共用同一份坐标与文案，改一处两边同时生效。
+- **印章做旧**：印章先画在离屏 canvas 上，用 `destination-out` 随机擦出墨点缺口，
+  再以 `multiply` 混合模式盖到卡片上，看起来像真的盖上去的。
+
+---
+
+## 🚀 本地运行
+
+需要 Node.js 18+（推荐 20 / 22）。
+
+```bash
+npm install
+npm run dev        # 打开 http://localhost:5173
+```
+
+打包与本地预览：
+
+```bash
+npm run build      # 产物在 dist/
+npm run preview    # 预览打包结果 http://localhost:4173
+npm run typecheck  # 可选：TypeScript 类型检查
+```
+
+> 想直接看成品效果？访问 `?demo=1` 会自动解锁并写上一段示例签名，
+> `?demo=2` 会一路跑到「预支成功」的成品图。
+
+---
+
+## 📦 部署到 GitHub Pages（一键）
+
+### 1. 建仓库并推送
+
+在 GitHub 新建一个仓库（**建议用英文名，例如 `hehao-card`**，中文仓库名会让 Pages 地址变成一长串百分号编码），然后：
+
+```bash
+cd 和好卡
+git init
+git add .
+git commit -m "feat: 终极和好卡预支 H5"
+git branch -M main
+git remote add origin https://github.com/<你的用户名>/<仓库名>.git
+git push -u origin main
+```
+
+### 2. 打开 Pages
+
+仓库页面 → **Settings → Pages → Build and deployment → Source** 选择 **GitHub Actions**。
+
+### 3. 等 1 分钟
+
+推送后 `.github/workflows/deploy.yml` 会自动跑：安装依赖 → 构建 → 发布。
+在仓库的 **Actions** 标签页可以看到进度，跑完后访问：
+
+```
+https://<你的用户名>.github.io/<仓库名>/
+```
+
+### 关于路径（重要）
+
+`vite.config.ts` 会自动读取 GitHub Actions 提供的 `GITHUB_REPOSITORY` 环境变量：
+
+- 项目站点 `https://<用户名>.github.io/<仓库名>/` → `base` 自动设为 `/<仓库名>/`
+- 用户站点 `<用户名>.github.io` → `base` 自动设为 `/`
+
+本地开发一律用 `/`。**所以不需要手动改任何路径配置。**
+
+---
+
+## 🎨 想改成自己的版本
+
+| 想改什么 | 改哪里 |
+| --- | --- |
+| 女朋友的名字（卡面「持卡人」、页头、文件名） | `src/cardSpec.ts` 的 `HOLDER_NAME`；页头文案在 `src/App.vue` |
+| 卡片条约三条内容 | `src/cardSpec.ts` 的 `TERMS` |
+| 身份验证的题目与选项 / 错误提示 | `src/components/VerifyDialog.vue` 的 `OPTIONS` 与 `ERROR_TEXT` |
+| 卡片标题、副标题、页脚 | `src/cardSpec.ts` 的 `CARD_TITLE` / `CARD_SUBTITLE` / `CARD_FOOTNOTE` |
+| 卡面配色、金色、印章红 | `src/cardSpec.ts` 的 `PALETTE`，以及 `src/style.css` 的 CSS 变量与类 |
+| 版式坐标（间距、字号、签名框大小） | `src/cardSpec.ts` 的 `LAYOUT`（DOM 与导出图同时生效） |
+| 印章文字、大小、角度 | `src/composables/useCardRenderer.ts` 的 `makeStampCanvas` 与 `LAYOUT.stamp` |
+| 特效强度 | `src/composables/useConfetti.ts` |
+
+---
+
+## 📁 目录结构
+
+```
+和好卡/
+├─ .github/workflows/deploy.yml   # GitHub Pages 自动部署
+├─ docs/                          # README 用的效果预览图
+├─ public/
+│  ├─ .nojekyll                   # 让 Pages 不要用 Jekyll 处理产物
+│  └─ favicon.svg
+├─ src/
+│  ├─ App.vue                     # 三关流程编排 + 关卡指示 + 烟花画布
+│  ├─ main.ts
+│  ├─ style.css                   # 全局样式与动画
+│  ├─ cardSpec.ts                 # 卡片尺寸/文案/版式（唯一数据源）
+│  ├─ components/
+│  │  ├─ StageLock.vue            # 第一关：锁定
+│  │  ├─ LockedCard.vue           # 卡片背面（锁定卡面）
+│  │  ├─ VerifyDialog.vue         # 身份验证弹窗
+│  │  ├─ StageCard.vue            # 第二关：翻转 + 签名
+│  │  ├─ FlipCard.vue             # 3D 翻转容器（自适应缩放）
+│  │  ├─ MakeUpCard.vue           # 卡片正面（条约卡面）
+│  │  ├─ SignaturePad.vue         # 手写签名板
+│  │  ├─ StageSuccess.vue         # 第三关：成品图
+│  │  └─ AppToast.vue
+│  └─ composables/
+│     ├─ useConfetti.ts           # 烟花 / 爱心特效
+│     └─ useCardRenderer.ts       # 卡面 + 笔迹 + 印章 合成
+├─ index.html
+├─ vite.config.ts                 # 含 Pages base 自动推导
+├─ uno.config.ts
+└─ tsconfig.json
+```
+
+---
+
+## ❓常见问题
+
+**手机上签名时页面会跟着滚动？**
+签名板已经设置了 `touch-action: none`，在白色签名区域内滑动不会滚动页面；区域外正常滚动。
+
+**保存下来的图片是 1020 × 1620 的高清图吗？**
+是。`renderCard` 默认 3 倍缩放导出，`StageSuccess.vue` 会把 dataURL 转成 Blob 再下载，文件名形如 `终极和好卡-预支成功-20260214-0731.png`。
+
+**iOS Safari 上点「保存卡片图片」没反应？**
+iOS 对 `download` 属性支持有限，会直接打开图片 —— 此时**长按图片选择「存储到照片」**即可，页面上的提示也是这么写的。
+
+**改了依赖之后 CI 报 `npm ci` 失败？**
+本地跑一次 `npm install`，把更新后的 `package-lock.json` 一起提交即可。
+
+**想换成 Hash 路由 / 加更多页面？**
+当前是单页无路由，直接在 `App.vue` 里加 stage 即可，不需要改部署配置。
+
+---
+
+祝早日和好，冷战永久失效 💕
