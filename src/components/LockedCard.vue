@@ -47,12 +47,12 @@
         </div>
 
         <p class="lock-title">卡片已锁定</p>
-        <p class="lock-sub">请先通过身份验证</p>
-        <span class="lock-badge">🔒 LOCKED · 需验证身份</span>
+        <p class="lock-sub">先确认这张卡送给谁</p>
+        <span class="lock-badge">🔒 LOCKED · 待署名</span>
 
         <div class="lock-foot">
           <span>NO. ✱✱✱✱-✱✱✱✱</span>
-          <span>签发人：？？？</span>
+          <span>持卡人：？？？</span>
         </div>
 
         <div class="lock-dots">• • •</div>

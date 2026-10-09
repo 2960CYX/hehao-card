@@ -28,7 +28,7 @@ const toastSignal = ref(0)
 const confettiCanvas = ref<HTMLCanvasElement | null>(null)
 const confetti = useConfetti(() => confettiCanvas.value)
 
-const steps = ['身份验证', '签个名', '和好啦']
+const steps = ['送给谁', '签个名', '和好啦']
 const activeStep = computed(() => (stage.value === 'locked' ? 0 : stage.value === 'card' ? 1 : 2))
 
 function toast(text: string, kind: 'error' | 'info' = 'info') {

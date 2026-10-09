@@ -10,7 +10,7 @@ let openTimer = 0
 let passTimer = 0
 
 onMounted(() => {
-  // 进入页面后自动弹出身份验证题
+  // 进入页面后自动弹出「签给谁」选择题
   openTimer = window.setTimeout(() => {
     open.value = true
   }, 700)
@@ -35,10 +35,10 @@ function onPass() {
 
     <p class="lock-status">
       <span class="pulse-dot" aria-hidden="true" />
-      卡片已锁定 · 等待身份验证
+      卡片已锁定 · 等一个名字
     </p>
 
-    <button type="button" class="btn btn-gold" @click="open = true">开始身份验证</button>
+    <button type="button" class="btn btn-gold" @click="open = true">去解锁卡片</button>
 
     <VerifyDialog :open="open" @update:open="open = $event" @pass="onPass" />
   </section>

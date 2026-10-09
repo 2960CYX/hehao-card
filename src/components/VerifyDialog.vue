@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { computed, ref, watch } from 'vue'
-import { ISSUER_NAME } from '../cardSpec'
+import { ref, watch } from 'vue'
+import { HOLDER_NAME } from '../cardSpec'
 
 const props = defineProps<{ open: boolean }>()
 const emit = defineEmits<{
@@ -8,16 +8,17 @@ const emit = defineEmits<{
   (e: 'pass'): void
 }>()
 
+/**
+ * 第一关：让她亲手把这张卡指定给收卡人。
+ * 「世界上最可爱的宝宝」是逗趣的干扰项 —— 选了会被温柔地纠正。
+ */
 const OPTIONS = [
   { key: 'A', text: '世界上最可爱的宝宝', correct: false },
-  { key: 'B', text: ISSUER_NAME, correct: true }
+  { key: 'B', text: HOLDER_NAME, correct: true }
 ]
 
-const ERROR_TEXT = '身份验证失败，只有宝宝才能解锁哦'
-
-const wrongCount = ref(0)
-const shaking = ref(false)
 const passed = ref(false)
+const shaking = ref(false)
 const errorText = ref('')
 const errorId = ref(0)
 const showError = ref(false)
@@ -26,15 +27,10 @@ watch(
   () => props.open,
   (open) => {
     if (!open) return
-    wrongCount.value = 0
     passed.value = false
     errorText.value = ''
     showError.value = false
   }
-)
-
-const hint = computed(() =>
-  wrongCount.value >= 3 ? '提示：正确答案里没有「最」字哦～' : '选对答案才能解锁卡片'
 )
 
 function choose(option: (typeof OPTIONS)[number]) {
@@ -48,9 +44,8 @@ function choose(option: (typeof OPTIONS)[number]) {
     return
   }
 
-  // 选错：抖动 + 弹窗提示（提示文案直接展示在弹窗内，不再重复弹 toast）
-  wrongCount.value += 1
-  errorText.value = ERROR_TEXT
+  // 选错：抖动 + 弹窗纠正
+  errorText.value = `这张卡是签给${HOLDER_NAME}的哦～`
   errorId.value += 1
   showError.value = true
 
@@ -68,8 +63,8 @@ function choose(option: (typeof OPTIONS)[number]) {
       <div v-if="open" class="dialog-mask" @click.self="emit('update:open', false)">
         <div class="dialog-panel" :class="{ 'is-shake': shaking }">
           <div class="dialog-badge">🔒</div>
-          <h2 class="dialog-title">身份验证</h2>
-          <p class="dialog-question">你就是要签这张卡的人，对吧？</p>
+          <h2 class="dialog-title">签给谁？</h2>
+          <p class="dialog-question">选对了，卡片才会解锁</p>
 
           <div class="dialog-options">
             <button
@@ -85,7 +80,7 @@ function choose(option: (typeof OPTIONS)[number]) {
             </button>
           </div>
 
-          <p class="dialog-hint" :class="{ 'dialog-hint-ghost': wrongCount < 3 }">{{ hint }}</p>
+          <p class="dialog-hint dialog-hint-ghost">这张卡，是要送出去的哦</p>
 
           <Transition name="pop">
             <div v-if="showError" :key="errorId" class="dialog-error">
@@ -97,7 +92,7 @@ function choose(option: (typeof OPTIONS)[number]) {
           <Transition name="pop">
             <div v-if="passed" class="dialog-ok">
               <span aria-hidden="true">✅</span>
-              <span>身份确认成功，正在解锁卡片…</span>
+              <span>收到，正在解锁卡片…</span>
             </div>
           </Transition>
         </div>

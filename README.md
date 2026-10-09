@@ -1,7 +1,7 @@
 # 和好卡 💌
 
 一个部署在 **GitHub Pages** 上的互动 H5：**她签一张「和好卡」送给你**，
-三关流程 —— 身份验证 → 3D 翻卡 → 手写签名 + 盖章生效，最后把生成的卡片图发给你。
+三关流程 —— 签给谁 → 3D 翻卡 → 手写签名 + 盖章生效，最后把生成的卡片图发给你。
 
 卡面上没有条款、没有条件，只有一颗心和一句「我们和好吧」。
 
@@ -12,9 +12,9 @@
 
 ## 📸 效果预览
 
-| 第一关 · 身份验证 | 第二关 · 卡片与签名 | 第三关 · 成品卡片 |
+| 第一关 · 签给谁 | 第二关 · 卡片与签名 | 第三关 · 成品卡片 |
 | :---: | :---: | :---: |
-| ![身份验证](docs/preview-1-lock.png) | ![签名](docs/preview-2-sign.png) | ![和好啦](docs/preview-3-card.png) |
+| ![签给谁](docs/preview-1-lock.png) | ![签名](docs/preview-2-sign.png) | ![和好啦](docs/preview-3-card.png) |
 
 ---
 
@@ -22,7 +22,7 @@
 
 | 关卡 | 内容 |
 | --- | --- |
-| 第一关 · 身份验证 | 卡片初始为**锁定状态**，自动弹出趣味选择题「你就是要签这张卡的人，对吧？」。选错会抖动并弹窗提示「身份验证失败，只有宝宝才能解锁哦」，选对才解锁。 |
+| 第一关 · 签给谁 | 卡片初始为**锁定状态**，自动弹出选择题「**签给谁？**」。她要亲手选中收卡人的名字，卡片才解锁；如果选了逗趣的干扰项，会抖动并弹窗提示「这张卡是签给陈宇翔的哦～」。 |
 | 第二关 · 卡片与签名 | 卡片 **3D 翻转入场**，展示烫金卡面（持卡人 / 签发人、描金爱心、「我们和好吧」）；底部是 HTML5 Canvas 手写签名板（鼠标 + 手机触摸都支持），提供「重签」「确认签名」。 |
 | 第三关 · 和好啦 | 点击「确认签名」后，用 Canvas 把**手写笔迹**和**「已生效」红色印章**合成绘制到卡片上，触发满屏爱心 + 烟花特效，提示「🎉 和好啦！」以及保存方式。 |
 
@@ -123,7 +123,7 @@ https://<你的用户名>.github.io/<仓库名>/
 | --- | --- |
 | 持卡人 / 签发人的名字 | `src/cardSpec.ts` 的 `HOLDER_NAME`（收卡人）、`ISSUER_NAME`（签名送卡人）、`ISSUER_FULL_NAME`（页脚全名）；页头文案在 `src/App.vue` |
 | 卡片标题 / 副标题 / 中间那句话 / 底部小字 | `src/cardSpec.ts` 的 `CARD_TITLE`、`CARD_SUBTITLE`、`CARD_MESSAGE`、`CARD_FOOTNOTE` |
-| 身份验证的题目与选项 / 错误提示 | `src/components/VerifyDialog.vue` 的 `OPTIONS` 与 `ERROR_TEXT` |
+| 第一关的题目、选项与答错提示 | `src/components/VerifyDialog.vue` 的 `OPTIONS`（`correct: true` 的那项是正确答案） |
 | 卡片标题、副标题、页脚 | `src/cardSpec.ts` 的 `CARD_TITLE` / `CARD_SUBTITLE` / `CARD_FOOTNOTE` |
 | 卡面配色、金色、印章红 | `src/cardSpec.ts` 的 `PALETTE`，以及 `src/style.css` 的 CSS 变量与类 |
 | 版式坐标（间距、字号、签名框大小） | `src/cardSpec.ts` 的 `LAYOUT`（DOM 与导出图同时生效） |
@@ -149,7 +149,7 @@ https://<你的用户名>.github.io/<仓库名>/
 │  ├─ components/
 │  │  ├─ StageLock.vue            # 第一关：锁定
 │  │  ├─ LockedCard.vue           # 卡片背面（锁定卡面）
-│  │  ├─ VerifyDialog.vue         # 身份验证弹窗
+│  │  ├─ VerifyDialog.vue         # 第一关弹窗（签给谁）
 │  │  ├─ StageCard.vue            # 第二关：翻转 + 签名
 │  │  ├─ FlipCard.vue             # 3D 翻转容器（自适应缩放）
 │  │  ├─ MakeUpCard.vue           # 卡片正面（烫金卡面 + 爱心）
