@@ -45,8 +45,8 @@ function onSaveClick() {
 <template>
   <section class="stage">
     <div class="success-head">
-      <h2 class="success-title">🎉 和好啦！</h2>
-      <p class="success-sub">和好卡已生效</p>
+      <h2 class="success-title">🎉 卡片做好啦！</h2>
+      <p class="success-sub">已盖上「已生效」印章 · 随时都能用</p>
     </div>
 
     <div class="result-wrap">

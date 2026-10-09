@@ -649,8 +649,11 @@ button {
   inset: 0;
   z-index: 80;
   display: flex;
-  align-items: flex-end;
-  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+  /* 键盘弹出把可视区压扁时，弹窗可以滚动，输入框不会被挡住 */
+  overflow-y: auto;
+  overscroll-behavior: contain;
   padding: 0;
   background: rgba(10, 2, 5, 0.72);
   backdrop-filter: blur(7px);
@@ -659,7 +662,6 @@ button {
 
 @media (min-width: 480px) {
   .dialog-mask {
-    align-items: center;
     padding: 20px;
   }
 }
@@ -668,6 +670,8 @@ button {
   position: relative;
   width: 100%;
   max-width: 400px;
+  /* margin-top:auto 让面板贴底（手机上像底部抽屉），键盘顶上来时还能滚动 */
+  margin-top: auto;
   padding: 26px 20px calc(env(safe-area-inset-bottom, 0px) + 24px);
   border-radius: 26px 26px 0 0;
   border: 1px solid rgba(232, 201, 106, 0.28);
@@ -683,6 +687,7 @@ button {
     border-radius: 26px;
     border-bottom: 1px solid rgba(232, 201, 106, 0.28);
     padding-bottom: 26px;
+    margin: auto;
   }
 }
 
@@ -733,57 +738,51 @@ button {
   color: rgba(255, 255, 255, 0.75);
 }
 
-.dialog-options {
+.dialog-form {
   display: flex;
   flex-direction: column;
   gap: 11px;
 }
 
-.option {
-  display: flex;
-  align-items: center;
-  gap: 12px;
+.dialog-input {
   width: 100%;
-  padding: 14px 16px;
+  height: 54px;
+  padding: 0 18px;
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.05);
-  color: rgba(255, 255, 255, 0.92);
-  font-size: 14.5px;
-  text-align: left;
-  cursor: pointer;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 255, 255, 0.06);
+  color: #fff;
+  /* 16px 是必须的：iOS 上小于 16px 的输入框聚焦时会自动放大整个页面 */
+  font-size: 16px;
+  font-family: inherit;
+  text-align: center;
+  letter-spacing: 0.08em;
+  outline: none;
   transition:
-    transform 0.15s ease,
     border-color 0.25s ease,
-    background 0.25s ease;
+    background 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
-.option:active:not(:disabled) {
-  transform: scale(0.98);
-  border-color: rgba(232, 201, 106, 0.7);
-  background: rgba(232, 201, 106, 0.12);
+.dialog-input::placeholder {
+  color: rgba(255, 255, 255, 0.3);
+  letter-spacing: 0.14em;
 }
 
-.option:disabled {
-  opacity: 0.55;
+.dialog-input:focus {
+  border-color: rgba(232, 201, 106, 0.8);
+  background: rgba(232, 201, 106, 0.1);
+  box-shadow: 0 0 0 3px rgba(232, 201, 106, 0.14);
 }
 
-.option-key {
-  flex: 0 0 auto;
-  display: grid;
-  place-items: center;
-  width: 26px;
-  height: 26px;
-  border-radius: 50%;
-  font-size: 12px;
-  font-weight: 700;
-  color: #ffe9b0;
-  border: 1px solid rgba(232, 201, 106, 0.45);
-  background: rgba(212, 175, 55, 0.12);
+.dialog-input.is-ok {
+  border-color: rgba(52, 211, 153, 0.65);
+  background: rgba(16, 185, 129, 0.14);
+  color: #d6ffe9;
 }
 
-.option-text {
-  flex: 1 1 auto;
+.dialog-input:disabled {
+  opacity: 0.9;
 }
 
 .dialog-hint {

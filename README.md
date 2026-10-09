@@ -14,7 +14,7 @@
 
 | 第一关 · 签给谁 | 第二关 · 卡片与签名 | 第三关 · 成品卡片 |
 | :---: | :---: | :---: |
-| ![签给谁](docs/preview-1-lock.png) | ![签名](docs/preview-2-sign.png) | ![和好啦](docs/preview-3-card.png) |
+| ![签给谁](docs/preview-1-lock.png) | ![签名](docs/preview-2-sign.png) | ![做好啦](docs/preview-3-card.png) |
 
 ---
 
@@ -22,9 +22,9 @@
 
 | 关卡 | 内容 |
 | --- | --- |
-| 第一关 · 签给谁 | 卡片初始为**锁定状态**，自动弹出选择题「**签给谁？**」。她要亲手选中收卡人的名字，卡片才解锁；如果选了逗趣的干扰项，会抖动并弹窗提示「这张卡是签给陈宇翔的哦～」。 |
+| 第一关 · 签给谁 | 卡片初始为**锁定状态**，自动弹出输入框「**签给谁？**」，她要亲手把收卡人的名字打进来，卡片才解锁。打错了会抖动 + 递进提示，**最多三次就会把答案告诉她**（保证不会卡住）。 |
 | 第二关 · 卡片与签名 | 卡片 **3D 翻转入场**，展示烫金卡面（持卡人 / 签发人、描金爱心、「我们和好吧」）；底部是 HTML5 Canvas 手写签名板（鼠标 + 手机触摸都支持），提供「重签」「确认签名」。 |
-| 第三关 · 和好啦 | 点击「确认签名」后，用 Canvas 把**手写笔迹**和**「已生效」红色印章**合成绘制到卡片上，触发满屏爱心 + 烟花特效，提示「🎉 和好啦！」以及保存方式。 |
+| 第三关 · 做好啦 | 点击「确认签名」后，用 Canvas 把**手写笔迹**和**「已生效」红色印章**合成绘制到卡片上，触发满屏爱心 + 烟花特效，提示「🎉 卡片做好啦！」以及保存方式。 |
 
 卡面内容只有这些，**没有任何条款**：
 
@@ -73,7 +73,7 @@ npm run typecheck  # 可选：TypeScript 类型检查
 ```
 
 > 想直接看成品效果？访问 `?demo=1` 会自动解锁并写上一段示例签名，
-> `?demo=2` 会一路跑到「和好啦」的成品图。
+> `?demo=2` 会一路跑到「做好啦」的成品图。
 
 ---
 
@@ -123,7 +123,8 @@ https://<你的用户名>.github.io/<仓库名>/
 | --- | --- |
 | 持卡人 / 签发人的名字 | `src/cardSpec.ts` 的 `HOLDER_NAME`（收卡人）、`ISSUER_NAME`（签名送卡人）、`ISSUER_FULL_NAME`（页脚全名）；页头文案在 `src/App.vue` |
 | 卡片标题 / 副标题 / 中间那句话 / 底部小字 | `src/cardSpec.ts` 的 `CARD_TITLE`、`CARD_SUBTITLE`、`CARD_MESSAGE`、`CARD_FOOTNOTE` |
-| 第一关的题目、选项与答错提示 | `src/components/VerifyDialog.vue` 的 `OPTIONS`（`correct: true` 的那项是正确答案） |
+| 第一关的题目、提示语 | `src/components/VerifyDialog.vue` 的 `HINTS` |
+| 第一关可以输入哪些名字算对 | `src/cardSpec.ts` 的 `HOLDER_ANSWERS`（大小名、小名都放进去） |
 | 卡片标题、副标题、页脚 | `src/cardSpec.ts` 的 `CARD_TITLE` / `CARD_SUBTITLE` / `CARD_FOOTNOTE` |
 | 卡面配色、金色、印章红 | `src/cardSpec.ts` 的 `PALETTE`，以及 `src/style.css` 的 CSS 变量与类 |
 | 版式坐标（间距、字号、签名框大小） | `src/cardSpec.ts` 的 `LAYOUT`（DOM 与导出图同时生效） |
