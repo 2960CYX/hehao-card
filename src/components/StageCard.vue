@@ -1,12 +1,13 @@
 <script setup lang="ts">
-import { nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
+import { computed, nextTick, onBeforeUnmount, onMounted, ref } from 'vue'
 import FlipCard from './FlipCard.vue'
 import LockedCard from './LockedCard.vue'
 import MakeUpCard from './MakeUpCard.vue'
-import SignaturePad from './SignaturePad.vue'
+import SignatureOverlay from './SignatureOverlay.vue'
+import { CARD_H, CARD_W, ISSUER_NAME } from '../cardSpec'
 import { renderCard } from '../composables/useCardRenderer'
 import { loadHolderSignature } from '../composables/useHolderSignature'
-import { CARD_H, CARD_W } from '../cardSpec'
+import type { InkStroke } from '../signature'
 
 const props = withDefaults(defineProps<{ serial: string; issuedAt: string; demo?: number }>(), {
   demo: 0
@@ -19,9 +20,15 @@ const emit = defineEmits<{
 
 const flipped = ref(false)
 const showPad = ref(false)
-const empty = ref(true)
 const busy = ref(false)
-const padRef = ref<InstanceType<typeof SignaturePad> | null>(null)
+const overlayOpen = ref(false)
+
+/** 她签好的笔迹（放大手写确认后带回） */
+const inkStrokes = ref<InkStroke[]>([])
+const inkCanvas = ref<HTMLCanvasElement | null>(null)
+const previewUrl = ref('')
+
+const hasInk = computed(() => inkCanvas.value !== null)
 
 const timers: number[] = []
 
@@ -29,14 +36,15 @@ onMounted(async () => {
   await nextTick()
   // 先亮出卡片背面，再翻到正面
   timers.push(window.setTimeout(() => (flipped.value = true), 260))
-  // 翻转完成后签名区再滑入
+  // 翻转完成后签名面板再滑入
   timers.push(window.setTimeout(() => (showPad.value = true), 860))
 
+  // ?demo=1 自动走一遍：打开放大手写 → 自动写字 → 自动确定
   if (props.demo >= 1) {
-    timers.push(window.setTimeout(() => padRef.value?.drawDemo(), 1250))
+    timers.push(window.setTimeout(() => (overlayOpen.value = true), 1300))
   }
   if (props.demo >= 2) {
-    timers.push(window.setTimeout(() => confirmSign(), 2000))
+    timers.push(window.setTimeout(() => confirmSign(), 4200))
   }
 })
 
@@ -45,15 +53,29 @@ onBeforeUnmount(() => {
   timers.length = 0
 })
 
-function clear() {
-  padRef.value?.clear()
-  emit('toast', '已清除笔迹，请重新签名', 'info')
+function openPad() {
+  if (busy.value) return
+  overlayOpen.value = true
+}
+
+function onInkConfirmed(payload: { ink: HTMLCanvasElement; strokes: InkStroke[] }) {
+  inkCanvas.value = payload.ink
+  inkStrokes.value = payload.strokes
+  previewUrl.value = payload.ink.toDataURL('image/png')
+  overlayOpen.value = false
+}
+
+function reset() {
+  inkCanvas.value = null
+  inkStrokes.value = []
+  previewUrl.value = ''
+  emit('toast', '已清除笔迹，点签名区重新写', 'info')
 }
 
 async function confirmSign() {
   if (busy.value) return
-  if (empty.value || !padRef.value) {
-    emit('toast', '还没签名呢，先在签名区写下名字吧', 'error')
+  if (!inkCanvas.value) {
+    emit('toast', '还没签名呢，点签名区写一个吧', 'error')
     return
   }
 
@@ -61,12 +83,11 @@ async function confirmSign() {
   try {
     // 关键一步：把她的笔迹画到「签发人」栏，再盖上红色印章
     // 「持卡人」栏是预先印好的签名图
-    const ink = padRef.value.exportInk()
     const holderSign = await loadHolderSignature()
     const canvas = renderCard({
       serial: props.serial,
       dateText: props.issuedAt,
-      issuerInk: ink,
+      issuerInk: inkCanvas.value,
       holderSign
     })
     emit('confirm', canvas.toDataURL('image/png'))
@@ -91,23 +112,44 @@ async function confirmSign() {
     <Transition name="slide-up">
       <div v-if="showPad" class="pad-panel">
         <div class="pad-head">
-          <span class="pad-title">✍️ 签发人签名</span>
-          <span class="pad-tip">手指 / 鼠标直接书写</span>
+          <span class="pad-title">✍️ 请 {{ ISSUER_NAME }} 签名</span>
+          <span class="pad-tip">{{ hasInk ? '点一下可以重新写' : '点下面放大手写' }}</span>
         </div>
 
-        <SignaturePad ref="padRef" :disabled="busy" @update:empty="empty = $event" />
+        <button
+          type="button"
+          class="sign-slot"
+          :class="{ 'has-ink': hasInk }"
+          :disabled="busy"
+          @click="openPad"
+        >
+          <img v-if="previewUrl" class="sign-slot-ink" :src="previewUrl" alt="" />
+          <span v-else class="sign-slot-empty">
+            <span class="sign-slot-icon" aria-hidden="true">✍️</span>
+            <span class="sign-slot-text">点这里手写签名</span>
+            <span class="sign-slot-sub">会放大到全屏，写起来更舒服</span>
+          </span>
+          <span class="sign-slot-expand" aria-hidden="true">⛶</span>
+        </button>
 
         <p class="pad-note">确认后，笔迹和红色印章会一起合成到卡片上</p>
 
         <div class="pad-actions">
-          <button type="button" class="btn btn-ghost" :disabled="empty || busy" @click="clear">
+          <button type="button" class="btn btn-ghost" :disabled="!hasInk || busy" @click="reset">
             重签
           </button>
-          <button type="button" class="btn btn-primary" :disabled="empty || busy" @click="confirmSign">
+          <button type="button" class="btn btn-primary" :disabled="!hasInk || busy" @click="confirmSign">
             {{ busy ? '合成中…' : '确认签名' }}
           </button>
         </div>
       </div>
     </Transition>
+
+    <SignatureOverlay
+      v-model:open="overlayOpen"
+      :strokes="inkStrokes"
+      :auto-demo="demo >= 1"
+      @confirm="onInkConfirmed"
+    />
   </section>
 </template>

@@ -8,6 +8,7 @@ import {
   HOLDER_NAME,
   HOLDER_SIGN_SCALE,
   ISSUER_NAME,
+  ISSUER_SIGN_SCALE,
   LAYOUT,
   PALETTE
 } from '../cardSpec'
@@ -60,7 +61,7 @@ function roundedPath(
   ctx.closePath()
 }
 
-/** 逐字绘制、可控制字距的居中文本（Canvas 没有 letter-spacing） */
+/** 逐字绘制、可控制字距的居中文本（Canvas 没有 letter-spacing），返回文本总宽 */
 function drawSpaced(
   ctx: CanvasRenderingContext2D,
   text: string,
@@ -79,6 +80,7 @@ function drawSpaced(
     x += widths[i] + spacing
   })
   ctx.textAlign = prevAlign
+  return total
 }
 
 function dashedRule(ctx: CanvasRenderingContext2D, x1: number, y: number, x2: number) {
@@ -246,13 +248,23 @@ function drawHolder(ctx: CanvasRenderingContext2D, holder: string) {
   dottedRule(ctx, LAYOUT.pad, LAYOUT.holderRuleY, CARD_W - LAYOUT.pad)
 }
 
-/** 卡面正中间那句「我们和好吧」 */
+/** 卡面正中间那句「我们和好吧」，两侧各一颗小金心 */
 function drawMessage(ctx: CanvasRenderingContext2D) {
   ctx.save()
   ctx.font = `700 ${LAYOUT.messageSize}px ${SERIF}`
   ctx.textAlign = 'center'
   ctx.fillStyle = PALETTE.ink
-  drawSpaced(ctx, CARD_MESSAGE, CARD_W / 2, LAYOUT.messageTop, 3)
+  const total = drawSpaced(ctx, CARD_MESSAGE, CARD_W / 2, LAYOUT.messageTop, 3)
+
+  // 两侧的小爱心，跟着文字宽度走
+  const heartSize = 9
+  const offset = total / 2 + 15
+  const cy = LAYOUT.messageTop + LAYOUT.messageSize / 2
+  ctx.fillStyle = PALETTE.gold
+  for (const dx of [-offset, offset]) {
+    heartPath(ctx, CARD_W / 2 + dx, cy, heartSize)
+    ctx.fill()
+  }
   ctx.restore()
 }
 
@@ -269,8 +281,10 @@ function drawSigBox(
   box: Box,
   inkArea: Box,
   label: string,
-  ink?: HTMLCanvasElement | null,
-  image?: HTMLImageElement | null
+  sign?: CanvasImageSource | null,
+  signW = 0,
+  signH = 0,
+  fitScale = 1
 ) {
   ctx.save()
   ctx.setLineDash([4, 3.2])
@@ -287,19 +301,13 @@ function drawSigBox(
   ctx.fillText(label, box.x + 9, box.y + 7)
   ctx.restore()
 
-  // multiply 让笔迹像真的墨水渗进纸里
-  if (ink) {
+  // 等比放进书写区（绝不拉伸），再用 multiply 让它像真的墨水渗进纸里
+  if (sign && signW > 0 && signH > 0) {
+    const r = fitInside(signW, signH, inkArea, fitScale)
     ctx.save()
     ctx.globalCompositeOperation = 'multiply'
     ctx.globalAlpha = 0.94
-    ctx.drawImage(ink, inkArea.x, inkArea.y, inkArea.w, inkArea.h)
-    ctx.restore()
-  } else if (image && image.naturalWidth > 0) {
-    ctx.save()
-    ctx.globalCompositeOperation = 'multiply'
-    ctx.globalAlpha = 0.94
-    const r = fitInside(image.naturalWidth, image.naturalHeight, inkArea, HOLDER_SIGN_SCALE)
-    ctx.drawImage(image, r.x, r.y, r.w, r.h)
+    ctx.drawImage(sign, r.x, r.y, r.w, r.h)
     ctx.restore()
   }
 }
@@ -449,8 +457,26 @@ export function renderCard(options: RenderCardOptions): HTMLCanvasElement {
   drawHeader(ctx, options.serial)
   drawHolder(ctx, HOLDER_NAME)
   drawMessage(ctx)
-  drawSigBox(ctx, LAYOUT.sigIssuer, LAYOUT.inkIssuer, '签发人签名', options.issuerInk)
-  drawSigBox(ctx, LAYOUT.sigHolder, LAYOUT.inkHolder, '持卡人签名', null, options.holderSign)
+  drawSigBox(
+    ctx,
+    LAYOUT.sigIssuer,
+    LAYOUT.inkIssuer,
+    '签发人签名',
+    options.issuerInk,
+    options.issuerInk?.width ?? 0,
+    options.issuerInk?.height ?? 0,
+    ISSUER_SIGN_SCALE
+  )
+  drawSigBox(
+    ctx,
+    LAYOUT.sigHolder,
+    LAYOUT.inkHolder,
+    '持卡人签名',
+    options.holderSign,
+    options.holderSign?.naturalWidth ?? 0,
+    options.holderSign?.naturalHeight ?? 0,
+    HOLDER_SIGN_SCALE
+  )
   drawStamp(ctx)
   drawMeta(ctx, options.dateText)
   drawFoot(ctx)

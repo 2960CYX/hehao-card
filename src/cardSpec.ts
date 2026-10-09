@@ -51,14 +51,14 @@ export const LAYOUT = {
   pad: 26,
 
   titleTop: 28,
-  titleSize: 34,
+  titleSize: 36,
 
-  subtitleTop: 72,
+  subtitleTop: 74,
   subtitleSize: 7,
 
-  ruleY: 88,
+  ruleY: 90,
 
-  serialTop: 97,
+  serialTop: 99,
   serialSize: 8.5,
 
   holderTop: 118,
@@ -68,7 +68,7 @@ export const LAYOUT = {
 
   /** 「我们和好吧」 */
   messageTop: 152,
-  messageSize: 22,
+  messageSize: 24,
 
   /** 签名栏一：签发人（她现场手写）—— 留得比原来高，手机上更好写 */
   sigIssuer: { x: 26, y: 188, w: 288, h: 148 },
@@ -98,6 +98,9 @@ export const HOLDER_SIGNATURE_FILE = 'holder-sign.png'
 
 /** 预印签名的缩放比例：避免顶到边框，也和她现场手写的笔迹更协调 */
 export const HOLDER_SIGN_SCALE = 0.82
+
+/** 她现场手写签名的缩放比例（笔迹导出时已裁到外框，这里只做轻微内缩） */
+export const ISSUER_SIGN_SCALE = 0.9
 
 const pad2 = (n: number) => String(n).padStart(2, '0')
 

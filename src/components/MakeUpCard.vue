@@ -75,7 +75,9 @@ const sigHolderStyle = {
           class="mk-message"
           :style="{ top: px(LAYOUT.messageTop), fontSize: px(LAYOUT.messageSize) }"
         >
-          {{ CARD_MESSAGE }}
+          <span class="mk-message-deco" aria-hidden="true">♥</span>
+          <span>{{ CARD_MESSAGE }}</span>
+          <span class="mk-message-deco" aria-hidden="true">♥</span>
         </p>
 
         <!-- 签名栏一：她现场手写 -->
@@ -251,13 +253,23 @@ const sigHolderStyle = {
   left: 0;
   right: 0;
   margin: 0;
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
   line-height: 1;
   font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
   font-weight: 700;
   letter-spacing: 3px;
   text-indent: 3px;
   color: #2a2118;
+}
+
+.mk-message-deco {
+  font-size: 0.4em;
+  line-height: 1;
+  color: #d4af37;
+  text-indent: 0;
 }
 
 .mk-sig {
