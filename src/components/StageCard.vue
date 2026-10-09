@@ -7,6 +7,7 @@ import SignatureOverlay from './SignatureOverlay.vue'
 import { CARD_H, CARD_W, ISSUER_NAME } from '../cardSpec'
 import { renderCard } from '../composables/useCardRenderer'
 import { loadHolderSignature } from '../composables/useHolderSignature'
+import { rotateInkCanvas, suggestInkRotation, type InkRotation } from '../inkOrientation'
 import type { InkStroke } from '../signature'
 
 const props = withDefaults(defineProps<{ serial: string; issuedAt: string; demo?: number }>(), {
@@ -28,9 +29,23 @@ const inkStrokes = ref<InkStroke[]>([])
 const inkCanvas = ref<HTMLCanvasElement | null>(null)
 const previewUrl = ref('')
 
+/** 笔迹在卡面上的旋转角度：手机横着拿却能没转屏时写的签名要转 90° 才摆得正 */
+const inkRotation = ref<InkRotation>(0)
+const autoRotated = ref(false)
+
 const hasInk = computed(() => inkCanvas.value !== null)
 
 const timers: number[] = []
+
+/** 预览和成品卡共用同一个角度，所见即所得 */
+function refreshPreview() {
+  const ink = inkCanvas.value
+  if (!ink) {
+    previewUrl.value = ''
+    return
+  }
+  previewUrl.value = rotateInkCanvas(ink, inkRotation.value).toDataURL('image/png')
+}
 
 onMounted(async () => {
   await nextTick()
@@ -61,14 +76,28 @@ function openPad() {
 function onInkConfirmed(payload: { ink: HTMLCanvasElement; strokes: InkStroke[] }) {
   inkCanvas.value = payload.ink
   inkStrokes.value = payload.strokes
-  previewUrl.value = payload.ink.toDataURL('image/png')
+  // 竖长的笔迹 = 写字的时候手机是横过来的（页面没跟着转），先自动摆正
+  const guess = suggestInkRotation(payload.strokes)
+  inkRotation.value = guess
+  autoRotated.value = guess !== 0
+  refreshPreview()
   overlayOpen.value = false
+}
+
+/** 手动转 90°：猜错方向或者就是想换个角度时用 */
+function rotateInk() {
+  if (!hasInk.value) return
+  inkRotation.value = (((inkRotation.value + 90) % 360) as InkRotation)
+  autoRotated.value = false
+  refreshPreview()
 }
 
 function reset() {
   inkCanvas.value = null
   inkStrokes.value = []
   previewUrl.value = ''
+  inkRotation.value = 0
+  autoRotated.value = false
   emit('toast', '已清除笔迹，点签名区重新写', 'info')
 }
 
@@ -88,7 +117,8 @@ async function confirmSign() {
       serial: props.serial,
       dateText: props.issuedAt,
       issuerInk: inkCanvas.value,
-      holderSign
+      holderSign,
+      inkRotation: inkRotation.value
     })
     emit('confirm', canvas.toDataURL('image/png'))
   } catch (error) {
@@ -132,11 +162,26 @@ async function confirmSign() {
           <span class="sign-slot-expand" aria-hidden="true">⛶</span>
         </button>
 
-        <p class="pad-note">确认后，笔迹和红色印章会一起合成到卡片上</p>
+        <p class="pad-note">
+          {{
+            autoRotated
+              ? '签名像是横着拿手机写的，已经自动摆正 · 不对就点「转一下」'
+              : '确认后，笔迹和红色印章会一起合成到卡片上'
+          }}
+        </p>
 
         <div class="pad-actions">
           <button type="button" class="btn btn-ghost" :disabled="!hasInk || busy" @click="reset">
             重签
+          </button>
+          <button
+            type="button"
+            class="btn btn-ghost"
+            :disabled="!hasInk || busy"
+            title="把签名转 90°"
+            @click="rotateInk"
+          >
+            ↻ 转一下
           </button>
           <button type="button" class="btn btn-primary" :disabled="!hasInk || busy" @click="confirmSign">
             {{ busy ? '合成中…' : '确认签名' }}

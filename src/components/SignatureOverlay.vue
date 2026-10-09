@@ -99,10 +99,11 @@ function close() {
             <SignaturePad ref="padRef" fill @update:empty="empty = $event" />
 
             <!-- 竖屏时提示横过来：签名的瓶颈是宽度，横屏能拿到 2 倍以上的书写宽度 -->
+            <!-- 屏幕旋转被锁住时手机转不动，只能横着拿手机写，所以补一句「签完自动摆正」 -->
             <Transition name="fade">
               <p v-if="isPortrait && empty" class="sign-rotate">
                 <span class="sign-rotate-icon" aria-hidden="true">↻</span>
-                把手机横过来写，签名区会宽很多
+                横过来写更宽 · 转不动也不怕，签完自动摆正
               </p>
             </Transition>
           </div>

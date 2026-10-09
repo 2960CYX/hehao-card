@@ -20,6 +20,12 @@ export interface RenderCardOptions {
   issuerInk?: HTMLCanvasElement | null
   /** 预先印上去的持卡人签名图片 */
   holderSign?: HTMLImageElement | null
+  /**
+   * 签发人笔迹的旋转角度（顺时针，度）。
+   * 手机锁了自动旋转时，用户横着拿手机写的签名在页面坐标里是竖的，
+   * 合成前先转 90° / 270° 摆正，否则卡上会出现一根竖着的签名。
+   */
+  inkRotation?: number
   /** 导出倍率，默认 3 倍（1020 × 1710 px） */
   scale?: number
 }
@@ -284,7 +290,8 @@ function drawSigBox(
   sign?: CanvasImageSource | null,
   signW = 0,
   signH = 0,
-  fitScale = 1
+  fitScale = 1,
+  rotation = 0
 ) {
   ctx.save()
   ctx.setLineDash([4, 3.2])
@@ -303,11 +310,22 @@ function drawSigBox(
 
   // 等比放进书写区（绝不拉伸），再用 multiply 让它像真的墨水渗进纸里
   if (sign && signW > 0 && signH > 0) {
-    const r = fitInside(signW, signH, inkArea, fitScale)
+    const turn = ((rotation % 360) + 360) % 360
+    const sideways = turn % 180 !== 0
+    // 转 90° / 270° 后宽高对调，所以按对调后的比例去占书写区
+    const fitW = sideways ? signH : signW
+    const fitH = sideways ? signW : signH
+    const r = fitInside(fitW, fitH, inkArea, fitScale)
+    // 未旋转时该画多大：转过 90° 的话，画布上的宽高正好是目标框的高宽
+    const drawW = sideways ? r.h : r.w
+    const drawH = sideways ? r.w : r.h
+
     ctx.save()
     ctx.globalCompositeOperation = 'multiply'
     ctx.globalAlpha = 0.94
-    ctx.drawImage(sign, r.x, r.y, r.w, r.h)
+    ctx.translate(r.x + r.w / 2, r.y + r.h / 2)
+    if (turn) ctx.rotate((turn * Math.PI) / 180)
+    ctx.drawImage(sign, -drawW / 2, -drawH / 2, drawW, drawH)
     ctx.restore()
   }
 }
@@ -465,7 +483,8 @@ export function renderCard(options: RenderCardOptions): HTMLCanvasElement {
     options.issuerInk,
     options.issuerInk?.width ?? 0,
     options.issuerInk?.height ?? 0,
-    ISSUER_SIGN_SCALE
+    ISSUER_SIGN_SCALE,
+    options.inkRotation ?? 0
   )
   drawSigBox(
     ctx,

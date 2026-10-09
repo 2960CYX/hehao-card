@@ -988,7 +988,14 @@ button {
 }
 
 .pad-actions .btn {
-  flex: 1 1 0;
+  /* 现在是三个按钮并排（重签 / 转一下 / 确认签名）：按内容宽度排，剩下的都留给主按钮 */
+  flex: 0 1 auto;
+  padding: 0 15px;
+  white-space: nowrap;
+}
+
+.pad-actions .btn-primary {
+  flex: 1 1 auto;
 }
 
 /* ================================================================
