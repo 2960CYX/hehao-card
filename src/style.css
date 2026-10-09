@@ -265,8 +265,7 @@ button {
   width: 100%;
   max-width: 340px;
   margin: 0 auto;
-  /* 锁定卡没有 JS 缩容器，用宽高比撑出高度；与 FlipCard 的 340×540 一致 */
-  aspect-ratio: 340 / 540;
+  /* 高度比例由组件用 CARD_W / CARD_H 内联绑定，避免和 cardSpec.ts 脱节 */
 }
 
 /* ---------------------------------------------------------------- 3D 翻转 */
@@ -853,9 +852,10 @@ button {
 
 .pad-panel {
   width: 100%;
-  max-width: 340px;
+  /* 手机上尽量占满宽度，签名区更大更好写 */
+  max-width: 420px;
   margin: 18px auto 0;
-  padding: 16px 16px 18px;
+  padding: 16px 12px 18px;
   border-radius: 20px;
   border: 1px solid rgba(255, 255, 255, 0.14);
   background: rgba(255, 255, 255, 0.06);

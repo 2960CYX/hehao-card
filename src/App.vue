@@ -5,7 +5,7 @@ import StageCard from './components/StageCard.vue'
 import StageLock from './components/StageLock.vue'
 import StageSuccess from './components/StageSuccess.vue'
 import { useConfetti } from './composables/useConfetti'
-import { formatDateCN, HOLDER_NAME, ISSUER_FULL_NAME, ISSUER_NAME, makeSerial } from './cardSpec'
+import { formatDateCN, HOLDER_NAME, ISSUER_NAME, makeSerial } from './cardSpec'
 
 type Stage = 'locked' | 'card' | 'done'
 
@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
     </main>
 
     <footer class="app-footer">
-      <p>签发人 {{ ISSUER_FULL_NAME }} · 持卡人 {{ HOLDER_NAME }}</p>
+      <p>签发人 {{ ISSUER_NAME }} · 持卡人 {{ HOLDER_NAME }}</p>
     </footer>
 
     <canvas ref="confettiCanvas" class="confetti-layer" aria-hidden="true" />

@@ -6,6 +6,7 @@ import MakeUpCard from './MakeUpCard.vue'
 import SignaturePad from './SignaturePad.vue'
 import { renderCard } from '../composables/useCardRenderer'
 import { loadHolderSignature } from '../composables/useHolderSignature'
+import { CARD_H, CARD_W } from '../cardSpec'
 
 const props = withDefaults(defineProps<{ serial: string; issuedAt: string; demo?: number }>(), {
   demo: 0
@@ -80,7 +81,7 @@ async function confirmSign() {
 
 <template>
   <section class="stage">
-    <div class="card-slot">
+    <div class="card-slot" :style="{ aspectRatio: `${CARD_W} / ${CARD_H}` }">
       <FlipCard :flipped="flipped">
         <template #back><LockedCard /></template>
         <template #front><MakeUpCard :serial="serial" :issued-at="issuedAt" /></template>

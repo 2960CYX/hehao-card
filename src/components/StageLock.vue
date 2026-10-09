@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { onBeforeUnmount, onMounted, ref } from 'vue'
+import { CARD_H, CARD_W } from '../cardSpec'
 import LockedCard from './LockedCard.vue'
 import VerifyDialog from './VerifyDialog.vue'
 
@@ -29,7 +30,7 @@ function onPass() {
 
 <template>
   <section class="stage">
-    <div class="card-slot">
+    <div class="card-slot" :style="{ aspectRatio: `${CARD_W} / ${CARD_H}` }">
       <LockedCard />
     </div>
 
