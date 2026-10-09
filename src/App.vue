@@ -28,7 +28,7 @@ const toastSignal = ref(0)
 const confettiCanvas = ref<HTMLCanvasElement | null>(null)
 const confetti = useConfetti(() => confettiCanvas.value)
 
-const steps = ['身份验证', '签署条约', '预支成功']
+const steps = ['身份验证', '签个名', '和好啦']
 const activeStep = computed(() => (stage.value === 'locked' ? 0 : stage.value === 'card' ? 1 : 2))
 
 function toast(text: string, kind: 'error' | 'info' = 'info') {
@@ -87,8 +87,8 @@ onBeforeUnmount(() => {
 
     <header class="app-header">
       <p class="kicker">FROM {{ ISSUER_NAME }} · TO {{ HOLDER_NAME }}</p>
-      <h1 class="app-title">终极和好卡 · 预支</h1>
-      <p class="app-sub">出示此卡，强制无条件终止冷战</p>
+      <h1 class="app-title">和好卡</h1>
+      <p class="app-sub">出示此卡，就和好吧</p>
     </header>
 
     <main class="app-main">
@@ -124,7 +124,7 @@ onBeforeUnmount(() => {
     </main>
 
     <footer class="app-footer">
-      <p>签发人 {{ ISSUER_FULL_NAME }} · 持卡人 {{ HOLDER_NAME }} · 有效期：永久</p>
+      <p>签发人 {{ ISSUER_FULL_NAME }} · 持卡人 {{ HOLDER_NAME }}</p>
     </footer>
 
     <canvas ref="confettiCanvas" class="confetti-layer" aria-hidden="true" />

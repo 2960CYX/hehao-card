@@ -9,7 +9,7 @@ const emit = defineEmits<{
 }>()
 
 const href = ref('')
-const fileName = computed(() => `终极和好卡-预支成功-${props.serial}.png`)
+const fileName = computed(() => `和好卡-${props.serial}.png`)
 
 /** dataURL → Blob，避免部分浏览器对超长 dataURL 下载支持不佳 */
 function dataUrlToBlob(dataUrl: string): Blob | null {
@@ -45,13 +45,13 @@ function onSaveClick() {
 <template>
   <section class="stage">
     <div class="success-head">
-      <h2 class="success-title">🎉 预支成功！</h2>
-      <p class="success-sub">终极和好卡已生效 · 冷战立即终止</p>
+      <h2 class="success-title">🎉 和好啦！</h2>
+      <p class="success-sub">和好卡已生效</p>
     </div>
 
     <div class="result-wrap">
       <span class="result-badge">已生效</span>
-      <img :src="image" alt="终极和好卡 · 预支凭证" />
+      <img :src="image" alt="和好卡" />
     </div>
 
     <p class="success-tip">

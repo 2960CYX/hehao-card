@@ -8,7 +8,7 @@ const PALETTE = ['#ff4d6d', '#ff8fa3', '#f9c74f', '#ffd166', '#e11d48', '#ffffff
 export interface ConfettiController {
   /** 小型庆祝：解锁成功时用 */
   burst: (count?: number) => void
-  /** 满屏爱心 + 烟花：预支成功时用 */
+  /** 满屏爱心 + 烟花：和好时用 */
   celebrate: () => void
   /** 清理定时器并停止动画 */
   reset: () => void

@@ -92,7 +92,7 @@ function confirmSign() {
 
         <SignaturePad ref="padRef" :disabled="busy" @update:empty="empty = $event" />
 
-        <p class="pad-note">确认后，笔迹与「预支成功」红色印章会一起合成到卡片上</p>
+        <p class="pad-note">确认后，笔迹和红色印章会一起合成到卡片上</p>
 
         <div class="pad-actions">
           <button type="button" class="btn btn-ghost" :disabled="empty || busy" @click="clear">

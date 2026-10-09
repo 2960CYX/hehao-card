@@ -9,7 +9,7 @@
         <div class="card-shine" />
         <div class="lock-heart" aria-hidden="true">♥</div>
 
-        <p class="lock-topline">ULTIMATE MAKE-UP PASS</p>
+        <p class="lock-topline">MAKE-UP PASS</p>
 
         <div class="lock-ring">
           <svg width="46" height="52" viewBox="0 0 46 52" fill="none" aria-hidden="true">

@@ -1,14 +1,14 @@
 import {
   CARD_FOOTNOTE,
   CARD_H,
+  CARD_MESSAGE,
   CARD_SUBTITLE,
   CARD_TITLE,
   CARD_W,
   HOLDER_NAME,
   ISSUER_NAME,
   LAYOUT,
-  PALETTE,
-  TERMS
+  PALETTE
 } from '../cardSpec'
 
 export interface RenderCardOptions {
@@ -71,23 +71,6 @@ function drawSpaced(
   ctx.textAlign = prevAlign
 }
 
-/** 中文按字断行 */
-function wrapText(ctx: CanvasRenderingContext2D, text: string, maxWidth: number): string[] {
-  const lines: string[] = []
-  let line = ''
-  for (const ch of text) {
-    const next = line + ch
-    if (line && ctx.measureText(next).width > maxWidth) {
-      lines.push(line)
-      line = ch
-    } else {
-      line = next
-    }
-  }
-  if (line) lines.push(line)
-  return lines
-}
-
 function dashedRule(ctx: CanvasRenderingContext2D, x1: number, y: number, x2: number) {
   ctx.save()
   ctx.setLineDash([3, 3])
@@ -128,6 +111,7 @@ function diamond(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: nu
   ctx.restore()
 }
 
+/** 爱心曲线 —— 与 MakeUpCard.vue 里那段 SVG path 使用同一个公式 */
 function heartPath(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number) {
   const s = size / 2
   ctx.beginPath()
@@ -203,14 +187,6 @@ function drawOrnaments(ctx: CanvasRenderingContext2D) {
   ctx.restore()
 }
 
-function drawWatermark(ctx: CanvasRenderingContext2D) {
-  ctx.save()
-  heartPath(ctx, CARD_W / 2 + 6, 244, 208)
-  ctx.fillStyle = 'rgba(200,16,46,0.03)'
-  ctx.fill()
-  ctx.restore()
-}
-
 /* ------------------------------------------------------------------ 各区块 */
 
 function drawHeader(ctx: CanvasRenderingContext2D, serial: string) {
@@ -227,9 +203,9 @@ function drawHeader(ctx: CanvasRenderingContext2D, serial: string) {
   ctx.textAlign = 'center'
   // 立体暗影
   ctx.fillStyle = 'rgba(120,86,20,0.34)'
-  drawSpaced(ctx, CARD_TITLE, CARD_W / 2, LAYOUT.titleTop + 1, 1.6)
+  drawSpaced(ctx, CARD_TITLE, CARD_W / 2, LAYOUT.titleTop + 1.2, 4)
   ctx.fillStyle = goldText
-  drawSpaced(ctx, CARD_TITLE, CARD_W / 2, LAYOUT.titleTop, 1.6)
+  drawSpaced(ctx, CARD_TITLE, CARD_W / 2, LAYOUT.titleTop, 4)
 
   ctx.font = `600 ${LAYOUT.subtitleSize}px ${SANS}`
   ctx.fillStyle = 'rgba(107,92,70,0.72)'
@@ -261,44 +237,35 @@ function drawHolder(ctx: CanvasRenderingContext2D, holder: string) {
   dottedRule(ctx, LAYOUT.pad, LAYOUT.holderRuleY, CARD_W - LAYOUT.pad)
 }
 
-function drawTerms(ctx: CanvasRenderingContext2D) {
-  const tx = LAYOUT.pad + LAYOUT.termBadgeR * 2 + 11
+/** 卡面正中间：一颗描金爱心 + 一句「我们和好吧」 */
+function drawCenterpiece(ctx: CanvasRenderingContext2D) {
+  const { cx, cy, size } = LAYOUT.heart
+  const s = size / 2
 
-  TERMS.forEach((term, i) => {
-    const top = LAYOUT.termsTop + i * LAYOUT.termStep
+  const fill = ctx.createLinearGradient(0, cy - s, 0, cy + s)
+  fill.addColorStop(0, 'rgba(225,29,72,0.11)')
+  fill.addColorStop(1, 'rgba(200,16,46,0.045)')
 
-    // 序号圆章
-    ctx.save()
-    ctx.beginPath()
-    ctx.arc(LAYOUT.pad + LAYOUT.termBadgeR, top + LAYOUT.termBadgeCY, LAYOUT.termBadgeR, 0, Math.PI * 2)
-    ctx.fillStyle = 'rgba(212,175,55,0.16)'
-    ctx.fill()
-    ctx.strokeStyle = 'rgba(169,124,21,0.75)'
-    ctx.lineWidth = 0.9
-    ctx.stroke()
+  const stroke = ctx.createLinearGradient(cx - s, cy - s, cx + s, cy + s)
+  stroke.addColorStop(0, '#f7e29a')
+  stroke.addColorStop(0.5, '#d4af37')
+  stroke.addColorStop(1, '#a97c15')
 
-    ctx.font = `700 ${LAYOUT.termNoSize}px ${SANS}`
-    ctx.textAlign = 'center'
-    ctx.fillStyle = PALETTE.goldDark
-    ctx.fillText(term.no, LAYOUT.pad + LAYOUT.termBadgeR, top + LAYOUT.termBadgeCY - LAYOUT.termNoSize / 2)
-    ctx.restore()
+  ctx.save()
+  heartPath(ctx, cx, cy, size)
+  ctx.fillStyle = fill
+  ctx.fill()
+  ctx.strokeStyle = stroke
+  ctx.lineWidth = 1.6
+  ctx.stroke()
+  ctx.restore()
 
-    // 标题
-    ctx.save()
-    ctx.textAlign = 'left'
-    ctx.font = `700 ${LAYOUT.termTitleSize}px ${SANS}`
-    ctx.fillStyle = PALETTE.ink
-    ctx.fillText(term.title, tx, top + LAYOUT.termTitleTop)
-
-    // 正文
-    ctx.font = `400 ${LAYOUT.termBodySize}px ${SANS}`
-    ctx.fillStyle = PALETTE.inkSoft
-    const maxWidth = CARD_W - LAYOUT.pad - tx
-    wrapText(ctx, term.text, maxWidth).forEach((line, li) => {
-      ctx.fillText(line, tx, top + LAYOUT.termBodyTop + li * LAYOUT.termBodyLineH)
-    })
-    ctx.restore()
-  })
+  ctx.save()
+  ctx.font = `700 ${LAYOUT.messageSize}px ${SERIF}`
+  ctx.textAlign = 'center'
+  ctx.fillStyle = PALETTE.ink
+  drawSpaced(ctx, CARD_MESSAGE, CARD_W / 2, LAYOUT.messageTop, 3)
+  ctx.restore()
 }
 
 function drawSignatureBox(ctx: CanvasRenderingContext2D, ink?: HTMLCanvasElement | null) {
@@ -406,12 +373,12 @@ function makeStampCanvas(r: number, scale: number): HTMLCanvasElement {
   ctx.font = `700 5px ${SANS}`
   ctx.textAlign = 'center'
   ctx.textBaseline = 'middle'
-  arcText(ctx, '终极和好卡 · 预支成功', r - 6.6, -1.02, 1.02)
+  arcText(ctx, '和好卡 · 已生效', r - 6.6, -0.78, 0.78)
 
   // 中央文字
   ctx.textBaseline = 'top'
-  ctx.font = `700 15px ${SANS}`
-  ctx.fillText('已生效', 0, -11)
+  ctx.font = `700 14px ${SANS}`
+  ctx.fillText('已生效', 0, -10)
 
   // 分隔线
   ctx.globalAlpha = 0.9
@@ -423,7 +390,7 @@ function makeStampCanvas(r: number, scale: number): HTMLCanvasElement {
 
   ctx.font = `700 6.2px ${SANS}`
   ctx.globalAlpha = 0.96
-  ctx.fillText('永久有效', 0, 13.5)
+  ctx.fillText('永远有效', 0, 13.5)
 
   // 做旧：随机擦出墨点缺口，像真的盖章（别擦太狠，否则环形文字糊掉）
   ctx.globalCompositeOperation = 'destination-out'
@@ -470,11 +437,10 @@ export function renderCard(options: RenderCardOptions): HTMLCanvasElement {
   ctx.textBaseline = 'top'
 
   drawPaper(ctx)
-  drawWatermark(ctx)
   drawOrnaments(ctx)
   drawHeader(ctx, options.serial)
   drawHolder(ctx, HOLDER_NAME)
-  drawTerms(ctx)
+  drawCenterpiece(ctx)
   drawSignatureBox(ctx, options.ink)
   drawStamp(ctx)
   drawMeta(ctx, options.dateText)

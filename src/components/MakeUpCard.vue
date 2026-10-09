@@ -1,9 +1,32 @@
 <script setup lang="ts">
-import { CARD_SUBTITLE, CARD_TITLE, HOLDER_NAME, ISSUER_NAME, LAYOUT, TERMS } from '../cardSpec'
+import {
+  CARD_FOOTNOTE,
+  CARD_H,
+  CARD_MESSAGE,
+  CARD_SUBTITLE,
+  CARD_TITLE,
+  CARD_W,
+  HOLDER_NAME,
+  ISSUER_NAME,
+  LAYOUT
+} from '../cardSpec'
 
 defineProps<{ serial: string; issuedAt: string }>()
 
 const px = (n: number) => `${n}px`
+
+/** 与 Canvas 导出图完全相同的爱心曲线（保证屏幕和保存的图长得一模一样） */
+const heartPath = (() => {
+  const { cx, cy, size } = LAYOUT.heart
+  const s = size / 2
+  const p = (x: number, y: number) => `${(cx + x * s).toFixed(2)} ${(cy + y * s).toFixed(2)}`
+  return [
+    `M ${p(0, 0.78)}`,
+    `C ${p(-1.55, -0.32)} ${p(-0.56, -1.28)} ${p(0, -0.42)}`,
+    `C ${p(0.56, -1.28)} ${p(1.55, -0.32)} ${p(0, 0.78)}`,
+    'Z'
+  ].join(' ')
+})()
 </script>
 
 <template>
@@ -11,7 +34,30 @@ const px = (n: number) => `${n}px`
     <div class="card-frame">
       <div class="card-paper">
         <div class="card-shine" />
-        <div class="mk-heart" aria-hidden="true">♥</div>
+
+        <svg
+          class="mk-heart-svg"
+          :viewBox="`0 0 ${CARD_W} ${CARD_H}`"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="mkHeartStroke" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0" stop-color="#f7e29a" />
+              <stop offset="0.5" stop-color="#d4af37" />
+              <stop offset="1" stop-color="#a97c15" />
+            </linearGradient>
+            <linearGradient id="mkHeartFill" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="0" stop-color="rgba(225,29,72,0.11)" />
+              <stop offset="1" stop-color="rgba(200,16,46,0.045)" />
+            </linearGradient>
+          </defs>
+          <path
+            :d="heartPath"
+            fill="url(#mkHeartFill)"
+            stroke="url(#mkHeartStroke)"
+            stroke-width="1.6"
+          />
+        </svg>
 
         <span class="mk-corner tl" />
         <span class="mk-corner tr" />
@@ -44,40 +90,12 @@ const px = (n: number) => `${n}px`
         </div>
         <div class="mk-dotrule" :style="{ top: px(LAYOUT.holderRuleY) }" />
 
-        <div
-          v-for="(term, i) in TERMS"
-          :key="term.no"
-          class="mk-term"
-          :style="{ top: px(LAYOUT.termsTop + i * LAYOUT.termStep) }"
+        <p
+          class="mk-message"
+          :style="{ top: px(LAYOUT.messageTop), fontSize: px(LAYOUT.messageSize) }"
         >
-          <span
-            class="mk-term-no"
-            :style="{
-              top: px(LAYOUT.termBadgeCY - LAYOUT.termBadgeR),
-              width: px(LAYOUT.termBadgeR * 2),
-              height: px(LAYOUT.termBadgeR * 2),
-              fontSize: px(LAYOUT.termNoSize)
-            }"
-          >
-            {{ term.no }}
-          </span>
-          <span
-            class="mk-term-title"
-            :style="{ top: px(LAYOUT.termTitleTop), fontSize: px(LAYOUT.termTitleSize) }"
-          >
-            {{ term.title }}
-          </span>
-          <span
-            class="mk-term-body"
-            :style="{
-              top: px(LAYOUT.termBodyTop),
-              fontSize: px(LAYOUT.termBodySize),
-              lineHeight: px(LAYOUT.termBodyLineH)
-            }"
-          >
-            {{ term.text }}
-          </span>
-        </div>
+          {{ CARD_MESSAGE }}
+        </p>
 
         <div
           class="mk-sig"
@@ -100,7 +118,7 @@ const px = (n: number) => `${n}px`
         </p>
 
         <p class="mk-foot" :style="{ top: px(LAYOUT.footTop), fontSize: px(LAYOUT.footSize) }">
-          本卡最终解释权归宝宝所有 ♥
+          {{ CARD_FOOTNOTE }}
         </p>
       </div>
     </div>
@@ -113,14 +131,11 @@ const px = (n: number) => `${n}px`
   height: 100%;
 }
 
-.mk-heart {
+.mk-heart-svg {
   position: absolute;
-  left: 50%;
-  top: 46%;
-  transform: translate(-50%, -50%);
-  font-size: 250px;
-  line-height: 1;
-  color: rgba(200, 16, 46, 0.05);
+  inset: 0;
+  width: 100%;
+  height: 100%;
   pointer-events: none;
 }
 
@@ -169,7 +184,8 @@ const px = (n: number) => `${n}px`
   line-height: 1;
   font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
   font-weight: 700;
-  letter-spacing: 1.6px;
+  letter-spacing: 4px;
+  text-indent: 4px;
   background: linear-gradient(180deg, #fff6cf 0%, #e6c86a 30%, #b98f16 52%, #f7e7ae 72%, #a97c15 100%);
   -webkit-background-clip: text;
   background-clip: text;
@@ -186,6 +202,7 @@ const px = (n: number) => `${n}px`
   line-height: 1;
   font-weight: 600;
   letter-spacing: 2.4px;
+  text-indent: 2.4px;
   color: rgba(107, 92, 70, 0.72);
 }
 
@@ -218,6 +235,7 @@ const px = (n: number) => `${n}px`
   line-height: 1;
   font-weight: 600;
   letter-spacing: 1.4px;
+  text-indent: 1.4px;
   color: rgba(107, 92, 70, 0.78);
 }
 
@@ -250,40 +268,18 @@ const px = (n: number) => `${n}px`
   border-top: 1px dotted rgba(140, 116, 80, 0.5);
 }
 
-.mk-term {
-  position: absolute;
-  left: 26px;
-  right: 26px;
-  height: 58px;
-}
-
-.mk-term-no {
+.mk-message {
   position: absolute;
   left: 0;
-  display: grid;
-  place-items: center;
-  border-radius: 50%;
-  border: 0.9px solid rgba(169, 124, 21, 0.75);
-  background: rgba(212, 175, 55, 0.16);
-  color: #a97c15;
-  font-weight: 700;
-  line-height: 1;
-}
-
-.mk-term-title {
-  position: absolute;
-  left: 31px;
-  line-height: 1;
-  font-weight: 700;
-  color: #2a2118;
-}
-
-.mk-term-body {
-  position: absolute;
-  left: 31px;
   right: 0;
-  font-weight: 400;
-  color: #6a5946;
+  margin: 0;
+  text-align: center;
+  line-height: 1;
+  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
+  font-weight: 700;
+  letter-spacing: 3px;
+  text-indent: 3px;
+  color: #2a2118;
 }
 
 .mk-sig {

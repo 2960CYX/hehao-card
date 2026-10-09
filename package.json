@@ -3,7 +3,7 @@
   "private": true,
   "version": "1.0.0",
   "type": "module",
-  "description": "终极和好卡 · 预支凭证 —— Vue 3 + Vite + UnoCSS 静态 H5",
+  "description": "和好卡 —— Vue 3 + Vite + UnoCSS 静态 H5",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

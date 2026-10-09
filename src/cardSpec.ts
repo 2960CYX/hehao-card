@@ -17,22 +17,15 @@ export const ISSUER_NAME = '诗诗宝宝'
 
 /** 签发人全名（只出现在页脚） */
 export const ISSUER_FULL_NAME = '李诗雪'
-export const CARD_TITLE = '终极和好卡'
-export const CARD_SUBTITLE = 'ULTIMATE MAKE-UP PASS'
-export const CARD_FOOTNOTE = '本卡最终解释权归宝宝所有 ♥'
 
-export interface Term {
-  no: string
-  title: string
-  text: string
-}
+export const CARD_TITLE = '和好卡'
+export const CARD_SUBTITLE = 'MAKE-UP PASS'
 
-/** 卡片条约：改这里就等于改卡片内容 */
-export const TERMS: Term[] = [
-  { no: '01', title: '随时生效', text: '出示此卡，强制无条件终止冷战。' },
-  { no: '02', title: '附加条款', text: '使用者需附赠 10 秒钟 Embrace。' },
-  { no: '03', title: '预支约束', text: '需用主动请吃大餐 / 家务还账。' }
-]
+/** 卡片正中间那句话 —— 没有条款，只有这一句 */
+export const CARD_MESSAGE = '我们和好吧'
+
+/** 卡片底部小字 */
+export const CARD_FOOTNOTE = '永远有效 ♥'
 
 export const PALETTE = {
   ink: '#2a2118',
@@ -53,46 +46,42 @@ export const PALETTE = {
 export const LAYOUT = {
   pad: 26,
 
-  titleTop: 22,
-  titleSize: 30,
+  titleTop: 34,
+  titleSize: 38,
 
-  subtitleTop: 60,
-  subtitleSize: 7,
+  subtitleTop: 84,
+  subtitleSize: 7.5,
 
-  ruleY: 78,
+  ruleY: 100,
 
-  serialTop: 86,
+  serialTop: 110,
   serialSize: 9,
 
-  holderTop: 106,
+  holderTop: 136,
   holderLabelSize: 9.5,
   holderSize: 15,
-  holderRuleY: 130,
+  holderRuleY: 160,
 
-  termsTop: 146,
-  termStep: 58,
-  termBadgeR: 10,
-  termBadgeCY: 15,
-  termNoSize: 9,
-  termTitleTop: 8,
-  termTitleSize: 13,
-  termBodyTop: 28,
-  termBodySize: 11.5,
-  termBodyLineH: 16,
+  /** 中间的大爱心（cx / cy 是爱心中心，size 是整体尺寸） */
+  heart: { cx: 170, cy: 234, size: 96 },
 
-  sigBox: { x: 26, y: 332, w: 288, h: 118 },
+  /** 爱心下方那句「我们和好吧」 */
+  messageTop: 298,
+  messageSize: 30,
+
+  sigBox: { x: 26, y: 342, w: 288, h: 116 },
   sigLabelSize: 8.5,
   /** 手写笔迹落在签名框内的实际区域（宽高比 = 签名板的宽高比） */
-  ink: { x: 34, y: 356, w: 272, h: 86 },
+  ink: { x: 34, y: 366, w: 272, h: 84 },
 
-  metaTop: 462,
+  metaTop: 470,
   metaSize: 9.5,
 
-  footTop: 500,
+  footTop: 506,
   footSize: 8.5,
 
   /** 红色印章：圆心 / 半径 / 旋转角度 */
-  stamp: { cx: 264, cy: 392, r: 38, rotate: -12 }
+  stamp: { cx: 262, cy: 398, r: 36, rotate: -12 }
 } as const
 
 /** 签名板宽高比，必须与 LAYOUT.ink 一致，否则笔迹会被拉伸 */
