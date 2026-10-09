@@ -5,6 +5,7 @@ import {
   CARD_SUBTITLE,
   CARD_TITLE,
   HOLDER_NAME,
+  HOLDER_SIGN_SCALE,
   ISSUER_NAME,
   LAYOUT
 } from '../cardSpec'
@@ -91,6 +92,7 @@ const sigHolderStyle = {
             class="mk-sig-img"
             :src="holderSignatureUrl"
             alt=""
+            :style="{ transform: `scale(${HOLDER_SIGN_SCALE})` }"
             @error="showHolderSign = false"
           />
         </div>
@@ -293,6 +295,8 @@ const sigHolderStyle = {
   height: calc(100% - 30px);
   object-fit: contain;
   object-position: center;
+  /* multiply 让预印签名和导出的合成图效果一致 */
+  mix-blend-mode: multiply;
   pointer-events: none;
   user-select: none;
   -webkit-user-drag: none;

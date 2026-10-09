@@ -99,6 +99,9 @@ export const INK_RATIO = LAYOUT.inkIssuer.w / LAYOUT.inkIssuer.h
 /** 预先印在卡片上的持卡人签名文件（放在 public/ 目录） */
 export const HOLDER_SIGNATURE_FILE = 'holder-sign.png'
 
+/** 预印签名的缩放比例：避免顶到边框，也和她现场手写的笔迹更协调 */
+export const HOLDER_SIGN_SCALE = 0.82
+
 const pad2 = (n: number) => String(n).padStart(2, '0')
 
 /** 生成卡片编号，例如 20260214-0731 */

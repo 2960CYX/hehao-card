@@ -68,6 +68,11 @@
       .done { display: none; margin-top: 16px; padding: 13px 16px; border-radius: 14px; font-size: 13px; line-height: 1.6;
               color: #b8f5cd; border: 1px solid rgba(52,211,153,.45); background: rgba(16,185,129,.18); text-align: center; }
       .done.show { display: block; }
+      .preview { display: none; margin-top: 16px; padding: 14px; border-radius: 16px;
+                 border: 1px solid rgba(255,255,255,.16); background: #fffdf8; text-align: center; }
+      .preview.show { display: block; }
+      .preview-tip { margin: 0 0 10px; font-size: 12px; color: #6a5946; }
+      .preview img { display: block; width: 100%; max-height: 190px; object-fit: contain; }
     </style>
   </head>
   <body>
@@ -86,7 +91,12 @@
         <button class="btn-main" id="save" disabled>保存签名图片</button>
       </div>
 
-      <div class="done" id="done">✅ 已保存 <b id="fname">holder-sign.png</b>。<br />把这个文件放到项目的 <b>public</b> 文件夹里就能用了。</div>
+      <div class="done" id="done">✅ 已开始下载 <b id="fname">holder-sign.png</b>。<br />如果没看到下载，长按（手机）或右键（电脑）下面这张图保存也可以。</div>
+
+      <div class="preview" id="preview-wrap">
+        <p class="preview-tip">⬇️ 长按这张图保存（手机）／右键另存为（电脑）</p>
+        <img id="preview" alt="你的签名" />
+      </div>
 
       <div class="tips">
         <h2>怎么用</h2>
@@ -264,11 +274,9 @@
           minY = Math.max(0, minY - padY); maxY = Math.min(1, maxY + padY)
 
           var scale = 3
-          var outW = Math.round((maxX - minX) * cssW * scale)
-          var outH = Math.round((maxY - minY) * cssH * scale)
           var off = document.createElement('canvas')
-          off.width = Math.max(outW, 1)
-          off.height = Math.max(outH, 1)
+          off.width = Math.max(Math.round((maxX - minX) * cssW * scale), 1)
+          off.height = Math.max(Math.round((maxY - minY) * cssH * scale), 1)
           var g = off.getContext('2d')
           g.scale(scale, scale)
           g.translate(-minX * cssW, -minY * cssH)
@@ -276,20 +284,35 @@
           g.lineJoin = 'round'
           for (var k = 0; k < strokes.length; k++) paintStroke(g, strokes[k], cssW, cssH)
 
-          var a = document.createElement('a')
-          a.download = 'holder-sign.png'
-          document.body.appendChild(a)
-          // 用 blob URL 下载：直接双击打开本文件（file://）时也能正常保存
-          off.toBlob(function (blob) {
-            if (!blob) return
-            var url = URL.createObjectURL(blob)
-            a.href = url
-            a.click()
-            setTimeout(function () { URL.revokeObjectURL(url) }, 4000)
-          }, 'image/png')
-          document.body.removeChild(a)
+          // 兜底展示：万一自动下载被浏览器拦住，长按/右键这张图也能存
+          var dataUrl = off.toDataURL('image/png')
+          document.getElementById('preview').src = dataUrl
+          document.getElementById('preview-wrap').classList.add('show')
           fname.textContent = 'holder-sign.png'
           done.classList.add('show')
+
+          // 自动下载：<a> 必须留在 DOM 里，点击之后再移除（之前就是这里写错了）
+          function triggerDownload(href) {
+            var a = document.createElement('a')
+            a.download = 'holder-sign.png'
+            a.href = href
+            a.style.display = 'none'
+            document.body.appendChild(a)
+            a.click()
+            setTimeout(function () {
+              if (a.parentNode) a.parentNode.removeChild(a)
+              if (href.indexOf('blob:') === 0) URL.revokeObjectURL(href)
+            }, 4000)
+          }
+
+          if (off.toBlob) {
+            off.toBlob(function (blob) {
+              if (blob) triggerDownload(URL.createObjectURL(blob))
+              else triggerDownload(dataUrl)
+            }, 'image/png')
+          } else {
+            triggerDownload(dataUrl)
+          }
         })
 
         syncSize()

@@ -6,6 +6,7 @@ import {
   CARD_TITLE,
   CARD_W,
   HOLDER_NAME,
+  HOLDER_SIGN_SCALE,
   ISSUER_NAME,
   LAYOUT,
   PALETTE
@@ -255,9 +256,9 @@ function drawMessage(ctx: CanvasRenderingContext2D) {
   ctx.restore()
 }
 
-/** 等比缩放到目标框内并居中 */
-function fitInside(iw: number, ih: number, box: Box) {
-  const scale = Math.min(box.w / iw, box.h / ih)
+/** 等比缩放到目标框内并居中；factor 用于再乘一个缩小系数 */
+function fitInside(iw: number, ih: number, box: Box, factor = 1) {
+  const scale = Math.min(box.w / iw, box.h / ih) * factor
   const w = iw * scale
   const h = ih * scale
   return { x: box.x + (box.w - w) / 2, y: box.y + (box.h - h) / 2, w, h }
@@ -297,7 +298,7 @@ function drawSigBox(
     ctx.save()
     ctx.globalCompositeOperation = 'multiply'
     ctx.globalAlpha = 0.94
-    const r = fitInside(image.naturalWidth, image.naturalHeight, inkArea)
+    const r = fitInside(image.naturalWidth, image.naturalHeight, inkArea, HOLDER_SIGN_SCALE)
     ctx.drawImage(image, r.x, r.y, r.w, r.h)
     ctx.restore()
   }
