@@ -14,10 +14,19 @@ import {
 export interface RenderCardOptions {
   serial: string
   dateText: string
-  /** 签名板导出的透明笔迹图层（见 SignaturePad.exportInk） */
-  ink?: HTMLCanvasElement | null
-  /** 导出倍率，默认 3 倍（1020 × 1620 px） */
+  /** 签名板导出的透明笔迹图层（签发人现场手写） */
+  issuerInk?: HTMLCanvasElement | null
+  /** 预先印上去的持卡人签名图片 */
+  holderSign?: HTMLImageElement | null
+  /** 导出倍率，默认 3 倍（1020 × 1710 px） */
   scale?: number
+}
+
+interface Box {
+  readonly x: number
+  readonly y: number
+  readonly w: number
+  readonly h: number
 }
 
 const SERIF = '"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif'
@@ -96,18 +105,17 @@ function dottedRule(ctx: CanvasRenderingContext2D, x1: number, y: number, x2: nu
   ctx.restore()
 }
 
-function diamond(ctx: CanvasRenderingContext2D, cx: number, cy: number, size: number) {
+/** 分隔线上的小爱心（替代原来的菱形） */
+function drawRuleHeart(ctx: CanvasRenderingContext2D) {
+  const cx = CARD_W / 2
+  const cy = LAYOUT.ruleY
   ctx.save()
-  ctx.translate(cx, cy)
-  ctx.rotate(Math.PI / 4)
   // 先用纸色盖掉虚线
   ctx.fillStyle = PALETTE.paperMid
-  ctx.fillRect(-size * 0.95, -size * 0.95, size * 1.9, size * 1.9)
-  ctx.fillStyle = '#e8c96a'
-  ctx.fillRect(-size / 2, -size / 2, size, size)
-  ctx.strokeStyle = 'rgba(169,124,21,0.6)'
-  ctx.lineWidth = 0.6
-  ctx.strokeRect(-size / 2, -size / 2, size, size)
+  ctx.fillRect(cx - 8, cy - 7, 16, 14)
+  heartPath(ctx, cx, cy, 10)
+  ctx.fillStyle = PALETTE.gold
+  ctx.fill()
   ctx.restore()
 }
 
@@ -212,7 +220,7 @@ function drawHeader(ctx: CanvasRenderingContext2D, serial: string) {
   drawSpaced(ctx, CARD_SUBTITLE, CARD_W / 2, LAYOUT.subtitleTop, 2.4)
 
   dashedRule(ctx, LAYOUT.pad, LAYOUT.ruleY, CARD_W - LAYOUT.pad)
-  diamond(ctx, CARD_W / 2, LAYOUT.ruleY, 5.4)
+  drawRuleHeart(ctx)
 
   ctx.font = `600 ${LAYOUT.serialSize}px ${SANS}`
   ctx.fillStyle = 'rgba(107,92,70,0.78)'
@@ -237,29 +245,8 @@ function drawHolder(ctx: CanvasRenderingContext2D, holder: string) {
   dottedRule(ctx, LAYOUT.pad, LAYOUT.holderRuleY, CARD_W - LAYOUT.pad)
 }
 
-/** 卡面正中间：一颗描金爱心 + 一句「我们和好吧」 */
-function drawCenterpiece(ctx: CanvasRenderingContext2D) {
-  const { cx, cy, size } = LAYOUT.heart
-  const s = size / 2
-
-  const fill = ctx.createLinearGradient(0, cy - s, 0, cy + s)
-  fill.addColorStop(0, 'rgba(225,29,72,0.11)')
-  fill.addColorStop(1, 'rgba(200,16,46,0.045)')
-
-  const stroke = ctx.createLinearGradient(cx - s, cy - s, cx + s, cy + s)
-  stroke.addColorStop(0, '#f7e29a')
-  stroke.addColorStop(0.5, '#d4af37')
-  stroke.addColorStop(1, '#a97c15')
-
-  ctx.save()
-  heartPath(ctx, cx, cy, size)
-  ctx.fillStyle = fill
-  ctx.fill()
-  ctx.strokeStyle = stroke
-  ctx.lineWidth = 1.6
-  ctx.stroke()
-  ctx.restore()
-
+/** 卡面正中间那句「我们和好吧」 */
+function drawMessage(ctx: CanvasRenderingContext2D) {
   ctx.save()
   ctx.font = `700 ${LAYOUT.messageSize}px ${SERIF}`
   ctx.textAlign = 'center'
@@ -268,14 +255,27 @@ function drawCenterpiece(ctx: CanvasRenderingContext2D) {
   ctx.restore()
 }
 
-function drawSignatureBox(ctx: CanvasRenderingContext2D, ink?: HTMLCanvasElement | null) {
-  const { x, y, w, h } = LAYOUT.sigBox
+/** 等比缩放到目标框内并居中 */
+function fitInside(iw: number, ih: number, box: Box) {
+  const scale = Math.min(box.w / iw, box.h / ih)
+  const w = iw * scale
+  const h = ih * scale
+  return { x: box.x + (box.w - w) / 2, y: box.y + (box.h - h) / 2, w, h }
+}
 
+function drawSigBox(
+  ctx: CanvasRenderingContext2D,
+  box: Box,
+  inkArea: Box,
+  label: string,
+  ink?: HTMLCanvasElement | null,
+  image?: HTMLImageElement | null
+) {
   ctx.save()
   ctx.setLineDash([4, 3.2])
   ctx.strokeStyle = 'rgba(140,116,80,0.55)'
   ctx.lineWidth = 1
-  roundedPath(ctx, x, y, w, h, 10)
+  roundedPath(ctx, box.x, box.y, box.w, box.h, 10)
   ctx.stroke()
   ctx.restore()
 
@@ -283,15 +283,22 @@ function drawSignatureBox(ctx: CanvasRenderingContext2D, ink?: HTMLCanvasElement
   ctx.font = `500 ${LAYOUT.sigLabelSize}px ${SANS}`
   ctx.textAlign = 'left'
   ctx.fillStyle = 'rgba(140,116,80,0.78)'
-  ctx.fillText('签发人签名 / SIGNATURE', x + 9, y + 7)
+  ctx.fillText(label, box.x + 9, box.y + 7)
   ctx.restore()
 
+  // multiply 让笔迹像真的墨水渗进纸里
   if (ink) {
     ctx.save()
-    // multiply 让笔迹像真的墨水渗进纸里
     ctx.globalCompositeOperation = 'multiply'
     ctx.globalAlpha = 0.94
-    ctx.drawImage(ink, LAYOUT.ink.x, LAYOUT.ink.y, LAYOUT.ink.w, LAYOUT.ink.h)
+    ctx.drawImage(ink, inkArea.x, inkArea.y, inkArea.w, inkArea.h)
+    ctx.restore()
+  } else if (image && image.naturalWidth > 0) {
+    ctx.save()
+    ctx.globalCompositeOperation = 'multiply'
+    ctx.globalAlpha = 0.94
+    const r = fitInside(image.naturalWidth, image.naturalHeight, inkArea)
+    ctx.drawImage(image, r.x, r.y, r.w, r.h)
     ctx.restore()
   }
 }
@@ -440,8 +447,9 @@ export function renderCard(options: RenderCardOptions): HTMLCanvasElement {
   drawOrnaments(ctx)
   drawHeader(ctx, options.serial)
   drawHolder(ctx, HOLDER_NAME)
-  drawCenterpiece(ctx)
-  drawSignatureBox(ctx, options.ink)
+  drawMessage(ctx)
+  drawSigBox(ctx, LAYOUT.sigIssuer, LAYOUT.inkIssuer, '签发人签名', options.issuerInk)
+  drawSigBox(ctx, LAYOUT.sigHolder, LAYOUT.inkHolder, '持卡人签名', null, options.holderSign)
   drawStamp(ctx)
   drawMeta(ctx, options.dateText)
   drawFoot(ctx)

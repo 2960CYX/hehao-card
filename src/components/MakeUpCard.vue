@@ -1,32 +1,36 @@
 <script setup lang="ts">
 import {
   CARD_FOOTNOTE,
-  CARD_H,
   CARD_MESSAGE,
   CARD_SUBTITLE,
   CARD_TITLE,
-  CARD_W,
   HOLDER_NAME,
   ISSUER_NAME,
   LAYOUT
 } from '../cardSpec'
+import { holderSignatureUrl } from '../composables/useHolderSignature'
+import { ref } from 'vue'
 
 defineProps<{ serial: string; issuedAt: string }>()
 
 const px = (n: number) => `${n}px`
 
-/** 与 Canvas 导出图完全相同的爱心曲线（保证屏幕和保存的图长得一模一样） */
-const heartPath = (() => {
-  const { cx, cy, size } = LAYOUT.heart
-  const s = size / 2
-  const p = (x: number, y: number) => `${(cx + x * s).toFixed(2)} ${(cy + y * s).toFixed(2)}`
-  return [
-    `M ${p(0, 0.78)}`,
-    `C ${p(-1.55, -0.32)} ${p(-0.56, -1.28)} ${p(0, -0.42)}`,
-    `C ${p(0.56, -1.28)} ${p(1.55, -0.32)} ${p(0, 0.78)}`,
-    'Z'
-  ].join(' ')
-})()
+/** 签名图缺失时不显示（不会报错，那一栏就是空的） */
+const showHolderSign = ref(true)
+
+const sigIssuerStyle = {
+  left: px(LAYOUT.sigIssuer.x),
+  top: px(LAYOUT.sigIssuer.y),
+  width: px(LAYOUT.sigIssuer.w),
+  height: px(LAYOUT.sigIssuer.h)
+}
+
+const sigHolderStyle = {
+  left: px(LAYOUT.sigHolder.x),
+  top: px(LAYOUT.sigHolder.y),
+  width: px(LAYOUT.sigHolder.w),
+  height: px(LAYOUT.sigHolder.h)
+}
 </script>
 
 <template>
@@ -34,30 +38,6 @@ const heartPath = (() => {
     <div class="card-frame">
       <div class="card-paper">
         <div class="card-shine" />
-
-        <svg
-          class="mk-heart-svg"
-          :viewBox="`0 0 ${CARD_W} ${CARD_H}`"
-          aria-hidden="true"
-        >
-          <defs>
-            <linearGradient id="mkHeartStroke" x1="0" y1="0" x2="1" y2="1">
-              <stop offset="0" stop-color="#f7e29a" />
-              <stop offset="0.5" stop-color="#d4af37" />
-              <stop offset="1" stop-color="#a97c15" />
-            </linearGradient>
-            <linearGradient id="mkHeartFill" x1="0" y1="0" x2="0" y2="1">
-              <stop offset="0" stop-color="rgba(225,29,72,0.11)" />
-              <stop offset="1" stop-color="rgba(200,16,46,0.045)" />
-            </linearGradient>
-          </defs>
-          <path
-            :d="heartPath"
-            fill="url(#mkHeartFill)"
-            stroke="url(#mkHeartStroke)"
-            stroke-width="1.6"
-          />
-        </svg>
 
         <span class="mk-corner tl" />
         <span class="mk-corner tr" />
@@ -78,7 +58,7 @@ const heartPath = (() => {
           {{ CARD_SUBTITLE }}
         </p>
 
-        <div class="mk-rule" :style="{ top: px(LAYOUT.ruleY) }"><i /></div>
+        <div class="mk-rule" :style="{ top: px(LAYOUT.ruleY) }"><i>♥</i></div>
 
         <p class="mk-serial" :style="{ top: px(LAYOUT.serialTop), fontSize: px(LAYOUT.serialSize) }">
           NO. {{ serial }}
@@ -97,19 +77,22 @@ const heartPath = (() => {
           {{ CARD_MESSAGE }}
         </p>
 
-        <div
-          class="mk-sig"
-          :style="{
-            left: px(LAYOUT.sigBox.x),
-            top: px(LAYOUT.sigBox.y),
-            width: px(LAYOUT.sigBox.w),
-            height: px(LAYOUT.sigBox.h)
-          }"
-        >
-          <span class="mk-sig-label" :style="{ fontSize: px(LAYOUT.sigLabelSize) }">
-            签发人签名 / SIGNATURE
-          </span>
+        <!-- 签名栏一：她现场手写 -->
+        <div class="mk-sig" :style="sigIssuerStyle">
+          <span class="mk-sig-label" :style="{ fontSize: px(LAYOUT.sigLabelSize) }">签发人签名</span>
           <span class="mk-sig-ghost">在此签名</span>
+        </div>
+
+        <!-- 签名栏二：预先印上去的持卡人签名 -->
+        <div class="mk-sig" :style="sigHolderStyle">
+          <span class="mk-sig-label" :style="{ fontSize: px(LAYOUT.sigLabelSize) }">持卡人签名</span>
+          <img
+            v-if="showHolderSign"
+            class="mk-sig-img"
+            :src="holderSignatureUrl"
+            alt=""
+            @error="showHolderSign = false"
+          />
         </div>
 
         <p class="mk-meta" :style="{ top: px(LAYOUT.metaTop), fontSize: px(LAYOUT.metaSize) }">
@@ -129,14 +112,6 @@ const heartPath = (() => {
 .mk-card {
   width: 100%;
   height: 100%;
-}
-
-.mk-heart-svg {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  pointer-events: none;
 }
 
 .mk-corner {
@@ -217,13 +192,14 @@ const heartPath = (() => {
 .mk-rule i {
   position: absolute;
   left: 50%;
-  top: -2.7px;
-  width: 5.4px;
-  height: 5.4px;
-  margin-left: -2.7px;
-  transform: rotate(45deg);
-  background: #e8c96a;
-  box-shadow: 0 0 0 0.6px rgba(169, 124, 21, 0.6);
+  top: -5px;
+  transform: translateX(-50%);
+  font-style: normal;
+  font-size: 9px;
+  line-height: 1;
+  color: #d4af37;
+  background: #fdf7ec;
+  padding: 0 3px;
 }
 
 .mk-serial {
@@ -306,6 +282,20 @@ const heartPath = (() => {
   font-size: 12px;
   letter-spacing: 0.3em;
   color: rgba(140, 116, 80, 0.32);
+}
+
+/* 预印签名：等比放进签名栏的书写区 */
+.mk-sig-img {
+  position: absolute;
+  left: 8px;
+  top: 22px;
+  width: calc(100% - 16px);
+  height: calc(100% - 30px);
+  object-fit: contain;
+  object-position: center;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-drag: none;
 }
 
 .mk-meta {

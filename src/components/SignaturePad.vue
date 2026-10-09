@@ -204,10 +204,10 @@ function clear() {
   syncSize()
 }
 
-/** 导出透明笔迹图层，尺寸严格等于卡片签名区的实际绘制区 */
+/** 导出透明笔迹图层，尺寸严格等于卡片「签发人签名」栏的实际书写区 */
 function exportInk(
-  width: number = LAYOUT.ink.w,
-  height: number = LAYOUT.ink.h,
+  width: number = LAYOUT.inkIssuer.w,
+  height: number = LAYOUT.inkIssuer.h,
   scale = 4
 ): HTMLCanvasElement {
   const cv = document.createElement('canvas')

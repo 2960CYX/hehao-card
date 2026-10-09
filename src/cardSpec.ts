@@ -5,9 +5,9 @@
  * 尺寸 / 坐标 / 文案，因此屏幕上看到的卡面和最终保存的图片始终是同一套版式。
  */
 
-/** 设计尺寸：卡面按 340 × 540 设计，再整体等比缩放到容器宽度 */
+/** 设计尺寸：卡面按 340 × 570 设计，再整体等比缩放到容器宽度 */
 export const CARD_W = 340
-export const CARD_H = 540
+export const CARD_H = 570
 
 /** 持卡人：收下这张卡的人（卡片「持卡人」一栏） */
 export const HOLDER_NAME = '陈宇翔'
@@ -53,46 +53,51 @@ export const PALETTE = {
 export const LAYOUT = {
   pad: 26,
 
-  titleTop: 34,
-  titleSize: 38,
+  titleTop: 30,
+  titleSize: 37,
 
-  subtitleTop: 84,
+  subtitleTop: 78,
   subtitleSize: 7.5,
 
-  ruleY: 100,
+  ruleY: 94,
 
-  serialTop: 110,
+  serialTop: 104,
   serialSize: 9,
 
-  holderTop: 136,
+  holderTop: 128,
   holderLabelSize: 9.5,
   holderSize: 15,
-  holderRuleY: 160,
+  holderRuleY: 152,
 
-  /** 中间的大爱心（cx / cy 是爱心中心，size 是整体尺寸） */
-  heart: { cx: 170, cy: 234, size: 96 },
-
-  /** 爱心下方那句「我们和好吧」 */
-  messageTop: 298,
+  /** 「我们和好吧」 */
+  messageTop: 170,
   messageSize: 30,
 
-  sigBox: { x: 26, y: 342, w: 288, h: 116 },
-  sigLabelSize: 8.5,
-  /** 手写笔迹落在签名框内的实际区域（宽高比 = 签名板的宽高比） */
-  ink: { x: 34, y: 366, w: 272, h: 84 },
+  /** 签名栏一：签发人（她现场手写） */
+  sigIssuer: { x: 26, y: 222, w: 288, h: 118 },
+  inkIssuer: { x: 34, y: 244, w: 272, h: 88 },
 
-  metaTop: 470,
+  /** 签名栏二：持卡人（预先印上去的签名） */
+  sigHolder: { x: 26, y: 352, w: 288, h: 118 },
+  inkHolder: { x: 34, y: 374, w: 272, h: 88 },
+
+  sigLabelSize: 8.5,
+
+  metaTop: 486,
   metaSize: 9.5,
 
-  footTop: 506,
+  footTop: 526,
   footSize: 8.5,
 
-  /** 红色印章：圆心 / 半径 / 旋转角度 */
-  stamp: { cx: 262, cy: 398, r: 36, rotate: -12 }
+  /** 红色印章：圆心 / 半径 / 旋转角度（正好盖在两个签名栏的交界处） */
+  stamp: { cx: 278, cy: 346, r: 34, rotate: -12 }
 } as const
 
-/** 签名板宽高比，必须与 LAYOUT.ink 一致，否则笔迹会被拉伸 */
-export const INK_RATIO = LAYOUT.ink.w / LAYOUT.ink.h
+/** 签名板宽高比，必须与 LAYOUT.inkIssuer 一致，否则笔迹会被拉伸 */
+export const INK_RATIO = LAYOUT.inkIssuer.w / LAYOUT.inkIssuer.h
+
+/** 预先印在卡片上的持卡人签名文件（放在 public/ 目录） */
+export const HOLDER_SIGNATURE_FILE = 'holder-sign.png'
 
 const pad2 = (n: number) => String(n).padStart(2, '0')
 

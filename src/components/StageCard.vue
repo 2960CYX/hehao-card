@@ -5,6 +5,7 @@ import LockedCard from './LockedCard.vue'
 import MakeUpCard from './MakeUpCard.vue'
 import SignaturePad from './SignaturePad.vue'
 import { renderCard } from '../composables/useCardRenderer'
+import { loadHolderSignature } from '../composables/useHolderSignature'
 
 const props = withDefaults(defineProps<{ serial: string; issuedAt: string; demo?: number }>(), {
   demo: 0
@@ -48,7 +49,7 @@ function clear() {
   emit('toast', '已清除笔迹，请重新签名', 'info')
 }
 
-function confirmSign() {
+async function confirmSign() {
   if (busy.value) return
   if (empty.value || !padRef.value) {
     emit('toast', '还没签名呢，先在签名区写下名字吧', 'error')
@@ -57,12 +58,15 @@ function confirmSign() {
 
   busy.value = true
   try {
-    // 关键一步：把笔迹画到卡片签名区，再盖上红色印章
+    // 关键一步：把她的笔迹画到「签发人」栏，再盖上红色印章
+    // 「持卡人」栏是预先印好的签名图
     const ink = padRef.value.exportInk()
+    const holderSign = await loadHolderSignature()
     const canvas = renderCard({
       serial: props.serial,
       dateText: props.issuedAt,
-      ink
+      issuerInk: ink,
+      holderSign
     })
     emit('confirm', canvas.toDataURL('image/png'))
   } catch (error) {
