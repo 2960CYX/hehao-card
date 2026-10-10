@@ -3,7 +3,7 @@ import confetti from 'canvas-confetti'
 /** canvas-confetti 的 shapeFromText 在部分类型定义里缺失，这里做一次安全读取 */
 type ShapeFactory = (opts: { text: string; scalar?: number }) => confetti.Shape
 
-const PALETTE = ['#ff4d6d', '#ff8fa3', '#f9c74f', '#ffd166', '#e11d48', '#ffffff', '#ffb3c1']
+const PALETTE = ['#d57c93', '#ec9fb1', '#efd0a0', '#ffe6cc', '#a53f61', '#fff8f5', '#f6c7d0']
 
 export interface ConfettiController {
   /** 小型庆祝：解锁成功时用 */

@@ -32,15 +32,15 @@ export const CARD_MESSAGE = '我们和好吧'
 export const CARD_FOOTNOTE = '永远有效 ♥'
 
 export const PALETTE = {
-  ink: '#2a2118',
-  inkSoft: '#6a5946',
-  gold: '#d4af37',
-  goldDark: '#a97c15',
-  goldLight: '#f7e3a1',
-  seal: '#c8102e',
+  ink: '#2b1d25',
+  inkSoft: '#755b66',
+  gold: '#c46b85',
+  goldDark: '#9e4e6b',
+  goldLight: '#f2c5b7',
+  seal: '#a83f62',
   paperTop: '#fffdf9',
-  paperMid: '#fdf7ec',
-  paperBottom: '#f7e7d0'
+  paperMid: '#fff8f2',
+  paperBottom: '#f7e5e4'
 }
 
 /**

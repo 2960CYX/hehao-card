@@ -15,13 +15,13 @@
           <svg width="46" height="52" viewBox="0 0 46 52" fill="none" aria-hidden="true">
             <defs>
               <linearGradient id="lkGold" x1="0" y1="0" x2="1" y2="1">
-                <stop offset="0" stop-color="#fff3c4" />
-                <stop offset=".5" stop-color="#d4af37" />
-                <stop offset="1" stop-color="#a97c15" />
+                <stop offset="0" stop-color="#ffe9d0" />
+                <stop offset=".5" stop-color="#d8899c" />
+                <stop offset="1" stop-color="#9e4e6b" />
               </linearGradient>
               <linearGradient id="lkBody" x1="0" y1="0" x2="0" y2="1">
-                <stop offset="0" stop-color="#f7e3a1" />
-                <stop offset="1" stop-color="#c9a227" />
+                <stop offset="0" stop-color="#f2c5b7" />
+                <stop offset="1" stop-color="#b76d83" />
               </linearGradient>
             </defs>
             <path

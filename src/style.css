@@ -1,7 +1,28 @@
 /* ==================================================================
-   全局基础样式 + 组件皮肤
-   UnoCSS 负责布局 / 间距 / 字号等原子类，这里放动画与定制外观。
+   和好卡 · 午夜梅子 / 旧玫瑰 / 香槟纸张
+   全局皮肤集中在这里，组件只负责结构和行为。
    ================================================================== */
+
+:root {
+  --night-950: #100912;
+  --night-900: #180d18;
+  --night-800: #241225;
+  --plum: #4b203d;
+  --rose: #d57c93;
+  --rose-bright: #ec9fb1;
+  --rose-deep: #a53f61;
+  --champagne: #efd0a0;
+  --champagne-soft: #fae7c5;
+  --paper: #fffaf4;
+  --paper-pink: #f9e9e6;
+  --ink: #2b1d25;
+  --ink-soft: #755b66;
+  --line: rgba(255, 232, 220, 0.18);
+  --line-dark: rgba(114, 59, 78, 0.34);
+  --serif: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
+  --sans: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Heiti SC', 'Noto Sans SC',
+    system-ui, -apple-system, sans-serif;
+}
 
 *,
 *::before,
@@ -23,10 +44,9 @@ html {
 body {
   min-height: 100vh;
   min-height: 100dvh;
-  background: #1b050b;
   color: #fff;
-  font-family: 'PingFang SC', 'Hiragino Sans GB', 'Microsoft YaHei', 'Heiti SC', 'Noto Sans SC',
-    system-ui, -apple-system, sans-serif;
+  background: var(--night-950);
+  font-family: var(--sans);
   -webkit-font-smoothing: antialiased;
   -webkit-tap-highlight-color: transparent;
   overscroll-behavior-y: none;
@@ -52,11 +72,26 @@ button {
   flex-direction: column;
   align-items: center;
   overflow-x: hidden;
+  isolation: isolate;
   background:
-    radial-gradient(120% 70% at 50% -10%, #6c1730 0%, rgba(108, 23, 48, 0) 62%),
-    radial-gradient(90% 55% at 100% 8%, rgba(212, 175, 55, 0.22) 0%, rgba(212, 175, 55, 0) 60%),
-    radial-gradient(80% 50% at 0% 100%, rgba(200, 16, 46, 0.28) 0%, rgba(200, 16, 46, 0) 60%),
-    linear-gradient(180deg, #2a0a12 0%, #1b050b 55%, #120306 100%);
+    radial-gradient(80% 46% at 50% -4%, rgba(142, 61, 93, 0.58), transparent 74%),
+    radial-gradient(48% 38% at 100% 22%, rgba(236, 159, 177, 0.14), transparent 74%),
+    radial-gradient(56% 40% at -8% 88%, rgba(176, 93, 119, 0.22), transparent 72%),
+    linear-gradient(160deg, #2a1429 0%, var(--night-900) 46%, var(--night-950) 100%);
+}
+
+.app-root::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  opacity: 0.26;
+  background-image:
+    linear-gradient(115deg, transparent 0 48%, rgba(255, 228, 215, 0.08) 49%, transparent 50%),
+    linear-gradient(25deg, transparent 0 48%, rgba(255, 228, 215, 0.06) 49%, transparent 50%);
+  background-size: 7px 7px, 11px 11px;
+  mix-blend-mode: soft-light;
 }
 
 .bg-deco {
@@ -70,46 +105,46 @@ button {
   position: absolute;
   display: block;
   border-radius: 50%;
-  filter: blur(46px);
-  opacity: 0.55;
-  animation: floaty 11s ease-in-out infinite;
+  filter: blur(54px);
+  opacity: 0.42;
+  animation: floaty 13s ease-in-out infinite;
 }
 
 .glow-1 {
-  width: 240px;
-  height: 240px;
-  top: -70px;
-  left: -70px;
-  background: rgba(225, 29, 72, 0.45);
+  width: 260px;
+  height: 260px;
+  top: -96px;
+  left: -86px;
+  background: rgba(205, 107, 139, 0.34);
 }
 
 .glow-2 {
-  width: 210px;
-  height: 210px;
-  top: 34%;
-  right: -80px;
-  background: rgba(212, 175, 55, 0.36);
-  animation-delay: -3.5s;
+  width: 230px;
+  height: 230px;
+  top: 32%;
+  right: -96px;
+  background: rgba(240, 191, 142, 0.2);
+  animation-delay: -4s;
 }
 
 .glow-3 {
-  width: 260px;
-  height: 260px;
-  bottom: -90px;
-  left: 12%;
-  background: rgba(122, 28, 49, 0.55);
-  animation-delay: -7s;
+  width: 290px;
+  height: 290px;
+  bottom: -124px;
+  left: 16%;
+  background: rgba(101, 38, 78, 0.55);
+  animation-delay: -8s;
 }
 
 .spark {
   position: absolute;
   display: block;
-  width: 4px;
-  height: 4px;
+  width: 3px;
+  height: 3px;
   border-radius: 50%;
-  background: rgba(255, 231, 168, 0.85);
-  box-shadow: 0 0 8px rgba(255, 214, 140, 0.85);
-  animation: twinkle 4.5s ease-in-out infinite;
+  background: rgba(255, 226, 198, 0.72);
+  box-shadow: 0 0 9px rgba(255, 203, 172, 0.74);
+  animation: twinkle 5.4s ease-in-out infinite;
 }
 
 @keyframes floaty {
@@ -118,19 +153,19 @@ button {
     transform: translate3d(0, 0, 0) scale(1);
   }
   50% {
-    transform: translate3d(0, 22px, 0) scale(1.08);
+    transform: translate3d(0, 20px, 0) scale(1.07);
   }
 }
 
 @keyframes twinkle {
   0%,
   100% {
-    opacity: 0.15;
-    transform: scale(0.7);
+    opacity: 0.12;
+    transform: scale(0.6);
   }
   50% {
-    opacity: 0.95;
-    transform: scale(1.25);
+    opacity: 0.9;
+    transform: scale(1.3);
   }
 }
 
@@ -141,33 +176,42 @@ button {
   z-index: 2;
   width: 100%;
   max-width: 460px;
-  padding: calc(env(safe-area-inset-top, 0px) + 22px) 20px 4px;
+  padding: calc(env(safe-area-inset-top, 0px) + 26px) 20px 7px;
   text-align: center;
 }
 
 .kicker {
-  margin: 0 0 8px;
+  margin: 0 0 10px;
+  color: rgba(255, 220, 205, 0.58);
   font-size: 10px;
-  letter-spacing: 0.22em;
-  color: rgba(255, 227, 168, 0.7);
+  letter-spacing: 0.25em;
 }
 
 .app-title {
   margin: 0;
-  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
-  font-size: 25px;
+  color: var(--champagne-soft);
+  font-family: var(--serif);
+  font-size: 28px;
   font-weight: 700;
-  letter-spacing: 0.06em;
-  background: linear-gradient(120deg, #fff6cf 0%, #e8c96a 38%, #fff3c4 55%, #c9a227 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  letter-spacing: 0.11em;
+  text-shadow: 0 3px 20px rgba(238, 148, 176, 0.2);
+}
+
+.app-title::after {
+  content: '♡';
+  display: inline-block;
+  margin-left: 7px;
+  color: var(--rose-bright);
+  font-family: var(--sans);
+  font-size: 16px;
+  transform: translateY(-6px) rotate(-12deg);
 }
 
 .app-sub {
-  margin: 7px 0 0;
+  margin: 8px 0 0;
+  color: rgba(255, 239, 232, 0.56);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.55);
+  letter-spacing: 0.08em;
 }
 
 .app-main {
@@ -189,8 +233,9 @@ button {
 
 .app-footer p {
   margin: 0;
+  color: rgba(255, 220, 205, 0.31);
   font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.34);
+  letter-spacing: 0.05em;
 }
 
 /* ---------------------------------------------------------------- 关卡指示 */
@@ -199,9 +244,15 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin: 16px 0 14px;
-  padding: 0;
+  gap: 7px;
+  width: max-content;
+  max-width: 100%;
+  margin: 18px auto 16px;
+  padding: 7px 12px;
+  border: 1px solid rgba(255, 220, 205, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 241, 232, 0.055);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.06);
   list-style: none;
 }
 
@@ -209,8 +260,8 @@ button {
   display: flex;
   align-items: center;
   gap: 5px;
+  color: rgba(255, 239, 232, 0.32);
   font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.34);
   transition: color 0.35s ease;
 }
 
@@ -218,38 +269,38 @@ button {
   content: '';
   width: 14px;
   height: 1px;
-  margin-right: 5px;
-  background: rgba(255, 255, 255, 0.18);
+  margin-right: 3px;
+  background: rgba(255, 220, 205, 0.18);
 }
 
 .stepper .step-dot {
   display: grid;
   place-items: center;
-  width: 17px;
-  height: 17px;
+  width: 18px;
+  height: 18px;
+  border: 1px solid rgba(255, 220, 205, 0.22);
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.24);
   font-size: 9px;
   transition: all 0.35s ease;
 }
 
 .stepper li.is-active {
-  color: #ffe9b0;
+  color: var(--champagne-soft);
 }
 
 .stepper li.is-active .step-dot {
-  border-color: rgba(232, 201, 106, 0.9);
-  background: rgba(212, 175, 55, 0.22);
-  box-shadow: 0 0 12px rgba(212, 175, 55, 0.5);
+  border-color: rgba(236, 159, 177, 0.92);
+  background: rgba(213, 124, 147, 0.28);
+  box-shadow: 0 0 15px rgba(213, 124, 147, 0.5);
 }
 
 .stepper li.is-done {
-  color: rgba(232, 201, 106, 0.6);
+  color: rgba(239, 208, 160, 0.68);
 }
 
 .stepper li.is-done .step-dot {
-  border-color: rgba(232, 201, 106, 0.55);
-  background: rgba(212, 175, 55, 0.14);
+  border-color: rgba(239, 208, 160, 0.55);
+  background: rgba(239, 208, 160, 0.12);
 }
 
 /* ---------------------------------------------------------------- 舞台 */
@@ -265,7 +316,6 @@ button {
   width: 100%;
   max-width: 340px;
   margin: 0 auto;
-  /* 高度比例由组件用 CARD_W / CARD_H 内联绑定，避免和 cardSpec.ts 脱节 */
 }
 
 /* ---------------------------------------------------------------- 3D 翻转 */
@@ -279,12 +329,10 @@ button {
   transition: opacity 0.35s ease;
 }
 
-/* 未测量完成前先隐藏，避免缩放跳变 */
 .flip-scene.is-measuring {
   opacity: 0;
 }
 
-/* 缩放容器：只负责把 340×540 的设计稿缩放到容器宽度（原点在左上角） */
 .card-scaler {
   position: absolute;
   top: 0;
@@ -295,7 +343,6 @@ button {
   transform-style: preserve-3d;
 }
 
-/* 翻转容器：绕自身中心翻转，所以缩放与旋转必须分层 */
 .flip-inner {
   position: absolute;
   inset: 0;
@@ -316,47 +363,40 @@ button {
   transform: rotateY(180deg);
 }
 
-/* 未测量完成前先隐藏，避免缩放跳变 */
-.flip-scene.is-measuring {
-  opacity: 0;
-}
-
-.flip-scene {
-  transition: opacity 0.35s ease;
-}
-
 /* ---------------------------------------------------------------- 卡片通用外框 */
 
 .card-frame {
   width: 100%;
   height: 100%;
   padding: 2.4px;
-  border-radius: 22px;
-  background: linear-gradient(140deg, #f7e29a 0%, #c9a227 32%, #fff3c4 52%, #a97c15 100%);
+  border-radius: 24px;
+  background:
+    linear-gradient(138deg, #f9dfc3 0%, #b76d83 22%, #f8e7cc 48%, #a75a78 74%, #edc69e 100%);
   box-shadow:
-    0 26px 60px -18px rgba(0, 0, 0, 0.85),
-    0 4px 14px rgba(0, 0, 0, 0.4);
+    0 30px 74px -22px rgba(0, 0, 0, 0.78),
+    0 10px 28px -16px rgba(213, 124, 147, 0.56);
 }
 
 .card-paper {
   position: relative;
   width: 100%;
   height: 100%;
-  border-radius: 19.5px;
   overflow: hidden;
-  background: linear-gradient(160deg, #fffdf9 0%, #fdf7ec 44%, #f7e7d0 100%);
+  border-radius: 21.5px;
+  background:
+    radial-gradient(110% 44% at 50% -2%, rgba(255, 255, 255, 0.95), transparent 64%),
+    linear-gradient(160deg, var(--paper) 0%, var(--paper-pink) 100%);
 }
 
 .card-paper::after {
   content: '';
   position: absolute;
-  inset: 5.5px;
-  border-radius: 15px;
-  border: 1px solid rgba(169, 124, 21, 0.42);
+  inset: 6px;
+  border: 1px solid rgba(173, 91, 116, 0.34);
+  border-radius: 17px;
   pointer-events: none;
 }
 
-/* 卡面高光扫过 */
 .card-shine {
   position: absolute;
   top: -60%;
@@ -366,11 +406,11 @@ button {
   background: linear-gradient(
     100deg,
     rgba(255, 255, 255, 0) 0%,
-    rgba(255, 255, 255, 0.5) 45%,
+    rgba(255, 255, 255, 0.46) 45%,
     rgba(255, 255, 255, 0) 100%
   );
   transform: rotate(18deg);
-  animation: shine 5.6s ease-in-out infinite;
+  animation: shine 6.8s ease-in-out infinite;
   pointer-events: none;
 }
 
@@ -391,56 +431,56 @@ button {
 
 .lock-card .card-paper {
   background:
-    radial-gradient(90% 60% at 50% 0%, rgba(212, 175, 55, 0.16) 0%, rgba(212, 175, 55, 0) 60%),
-    linear-gradient(160deg, #3f1021 0%, #26080f 48%, #170307 100%);
+    radial-gradient(90% 58% at 50% 4%, rgba(241, 168, 185, 0.22), transparent 64%),
+    linear-gradient(160deg, #51243f 0%, #2b1428 50%, #160b16 100%);
 }
 
 .lock-heart {
   position: absolute;
-  left: 50%;
   top: 47%;
-  transform: translate(-50%, -50%);
+  left: 50%;
+  color: rgba(255, 224, 224, 0.055);
   font-size: 250px;
   line-height: 1;
-  color: rgba(255, 255, 255, 0.035);
+  transform: translate(-50%, -50%);
   pointer-events: none;
 }
 
 .lock-topline {
   position: absolute;
   top: 26px;
-  left: 0;
   right: 0;
-  text-align: center;
-  line-height: 1;
+  left: 0;
+  color: rgba(248, 203, 212, 0.65);
   font-size: 7px;
   letter-spacing: 0.34em;
-  color: rgba(232, 201, 106, 0.75);
+  line-height: 1;
+  text-align: center;
 }
 
 .lock-ring {
   position: absolute;
-  left: 50%;
   top: 176px;
-  transform: translateX(-50%);
-  width: 112px;
-  height: 112px;
-  border-radius: 50%;
+  left: 50%;
   display: grid;
   place-items: center;
-  border: 1px solid rgba(232, 201, 106, 0.45);
-  background: radial-gradient(circle at 50% 35%, rgba(212, 175, 55, 0.2), rgba(212, 175, 55, 0.02) 70%);
+  width: 112px;
+  height: 112px;
+  border: 1px solid rgba(240, 186, 202, 0.56);
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 35%, rgba(221, 130, 157, 0.25), rgba(255, 255, 255, 0.025) 70%);
   box-shadow:
-    0 0 0 8px rgba(232, 201, 106, 0.05),
-    inset 0 0 26px rgba(212, 175, 55, 0.16);
+    0 0 0 8px rgba(240, 186, 202, 0.06),
+    inset 0 0 26px rgba(242, 147, 178, 0.18);
+  transform: translateX(-50%);
 }
 
 .lock-ring::before {
   content: '';
   position: absolute;
   inset: -18px;
+  border: 1px dashed rgba(240, 186, 202, 0.26);
   border-radius: 50%;
-  border: 1px dashed rgba(232, 201, 106, 0.22);
   animation: spin 26s linear infinite;
 }
 
@@ -467,80 +507,77 @@ button {
 .lock-title {
   position: absolute;
   top: 300px;
-  left: 0;
   right: 0;
+  left: 0;
   margin: 0;
-  text-align: center;
-  line-height: 1;
-  font-family: 'Noto Serif SC', 'Source Han Serif SC', 'Songti SC', 'STSong', serif;
+  color: var(--champagne-soft);
+  font-family: var(--serif);
   font-size: 21px;
   font-weight: 700;
   letter-spacing: 0.14em;
-  background: linear-gradient(120deg, #fff6cf, #e8c96a 45%, #fff3c4 62%, #c9a227);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  line-height: 1;
+  text-align: center;
 }
 
 .lock-sub {
   position: absolute;
   top: 338px;
-  left: 0;
   right: 0;
+  left: 0;
   margin: 0;
-  text-align: center;
-  line-height: 1;
+  color: rgba(255, 231, 231, 0.5);
   font-size: 11px;
-  color: rgba(255, 255, 255, 0.45);
+  line-height: 1;
+  text-align: center;
 }
 
 .lock-badge {
   position: absolute;
-  left: 50%;
   top: 368px;
-  transform: translateX(-50%);
-  line-height: 1;
+  left: 50%;
   padding: 6px 14px;
+  border: 1px solid rgba(236, 159, 177, 0.52);
   border-radius: 999px;
-  border: 1px solid rgba(200, 16, 46, 0.55);
-  background: rgba(200, 16, 46, 0.16);
+  color: #ffc9d5;
+  background: rgba(190, 75, 112, 0.19);
   font-size: 10px;
   letter-spacing: 0.14em;
-  color: #ffb3c1;
+  line-height: 1;
   white-space: nowrap;
+  transform: translateX(-50%);
 }
 
 .lock-foot {
   position: absolute;
-  left: 26px;
-  right: 26px;
   top: 452px;
+  right: 26px;
+  left: 26px;
   display: flex;
   justify-content: space-between;
-  line-height: 1;
+  color: rgba(255, 229, 224, 0.34);
   font-size: 8.5px;
   letter-spacing: 0.12em;
-  color: rgba(255, 255, 255, 0.34);
+  line-height: 1;
 }
 
 .lock-foot::before {
   content: '';
   position: absolute;
-  left: 0;
-  right: 0;
   top: -22px;
-  border-top: 1px dashed rgba(255, 255, 255, 0.16);
+  right: 0;
+  left: 0;
+  border-top: 1px dashed rgba(255, 229, 224, 0.17);
 }
 
 .lock-dots {
   position: absolute;
-  left: 0;
   right: 0;
   bottom: 24px;
-  text-align: center;
+  left: 0;
+  color: rgba(240, 186, 202, 0.6);
   font-size: 10px;
   letter-spacing: 0.5em;
-  color: rgba(232, 201, 106, 0.5);
+  text-align: center;
 }
 
 /* ================================================================
@@ -553,16 +590,17 @@ button {
   justify-content: center;
   gap: 7px;
   margin: 20px 0 14px;
+  color: rgba(255, 230, 226, 0.66);
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.6);
+  letter-spacing: 0.03em;
 }
 
 .lock-status .pulse-dot {
   width: 7px;
   height: 7px;
   border-radius: 50%;
-  background: #e8c96a;
-  box-shadow: 0 0 10px rgba(232, 201, 106, 0.9);
+  background: var(--rose-bright);
+  box-shadow: 0 0 12px rgba(236, 159, 177, 0.92);
   animation: pulseDot 1.6s ease-in-out infinite;
 }
 
@@ -594,13 +632,18 @@ button {
   border-radius: 999px;
   font-size: 14px;
   font-weight: 600;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.04em;
   cursor: pointer;
   user-select: none;
   transition:
     transform 0.16s ease,
     opacity 0.2s ease,
-    box-shadow 0.25s ease;
+    box-shadow 0.25s ease,
+    filter 0.25s ease;
+}
+
+.btn:hover:not(:disabled) {
+  filter: brightness(1.06);
 }
 
 .btn:active:not(:disabled) {
@@ -613,26 +656,26 @@ button {
 }
 
 .btn-primary {
-  color: #fff;
-  background: linear-gradient(135deg, #e11d48 0%, #c8102e 55%, #9b0b22 100%);
+  color: #fff8f5;
+  background: linear-gradient(135deg, #df86a0 0%, #bd5579 54%, #873451 100%);
   box-shadow:
-    0 12px 26px -10px rgba(200, 16, 46, 0.9),
-    inset 0 1px 0 rgba(255, 255, 255, 0.25);
+    0 14px 28px -12px rgba(183, 72, 110, 0.88),
+    inset 0 1px 0 rgba(255, 255, 255, 0.27);
 }
 
 .btn-gold {
-  color: #3a2405;
-  background: linear-gradient(135deg, #fff3c4 0%, #e8c96a 45%, #c9a227 100%);
+  color: #3f2430;
+  background: linear-gradient(135deg, #ffe8c6 0%, #efc99a 48%, #d99d80 100%);
   box-shadow:
-    0 12px 26px -12px rgba(212, 175, 55, 0.9),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    0 14px 28px -14px rgba(218, 157, 128, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.65);
 }
 
 .btn-ghost {
-  color: rgba(255, 255, 255, 0.86);
-  background: rgba(255, 255, 255, 0.08);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  backdrop-filter: blur(6px);
+  color: rgba(255, 242, 236, 0.88);
+  border: 1px solid rgba(255, 222, 215, 0.2);
+  background: rgba(255, 235, 230, 0.08);
+  backdrop-filter: blur(8px);
 }
 
 .btn-block {
@@ -650,13 +693,11 @@ button {
   display: flex;
   flex-direction: column;
   align-items: center;
-  /* 键盘弹出把可视区压扁时，弹窗可以滚动，输入框不会被挡住 */
   overflow-y: auto;
-  overscroll-behavior: contain;
   padding: 0;
-  background: rgba(10, 2, 5, 0.72);
-  backdrop-filter: blur(7px);
-  -webkit-backdrop-filter: blur(7px);
+  background: rgba(13, 5, 13, 0.74);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 @media (min-width: 480px) {
@@ -669,24 +710,23 @@ button {
   position: relative;
   width: 100%;
   max-width: 400px;
-  /* margin-top:auto 让面板贴底（手机上像底部抽屉），键盘顶上来时还能滚动 */
   margin-top: auto;
-  padding: 26px 20px calc(env(safe-area-inset-bottom, 0px) + 24px);
-  border-radius: 26px 26px 0 0;
-  border: 1px solid rgba(232, 201, 106, 0.28);
+  padding: 27px 20px calc(env(safe-area-inset-bottom, 0px) + 24px);
+  border: 1px solid rgba(239, 177, 192, 0.28);
   border-bottom: 0;
+  border-radius: 28px 28px 0 0;
   background:
-    radial-gradient(120% 70% at 50% 0%, rgba(200, 16, 46, 0.28) 0%, rgba(200, 16, 46, 0) 60%),
-    linear-gradient(180deg, #2f0b16 0%, #1c060c 100%);
-  box-shadow: 0 -20px 60px rgba(0, 0, 0, 0.7);
+    radial-gradient(120% 70% at 50% 0%, rgba(194, 82, 120, 0.32), transparent 62%),
+    linear-gradient(180deg, #3b1834 0%, #1d0d1c 100%);
+  box-shadow: 0 -24px 70px rgba(0, 0, 0, 0.72);
 }
 
 @media (min-width: 480px) {
   .dialog-panel {
-    border-radius: 26px;
-    border-bottom: 1px solid rgba(232, 201, 106, 0.28);
-    padding-bottom: 26px;
     margin: auto;
+    padding-bottom: 26px;
+    border-bottom: 1px solid rgba(239, 177, 192, 0.28);
+    border-radius: 28px;
   }
 }
 
@@ -695,11 +735,11 @@ button {
   position: absolute;
   top: 9px;
   left: 50%;
-  transform: translateX(-50%);
   width: 42px;
   height: 4px;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.18);
+  background: rgba(255, 238, 232, 0.22);
+  transform: translateX(-50%);
 }
 
 @media (min-width: 480px) {
@@ -709,32 +749,32 @@ button {
 }
 
 .dialog-badge {
+  display: grid;
+  place-items: center;
   width: 54px;
   height: 54px;
   margin: 6px auto 12px;
-  display: grid;
-  place-items: center;
+  border: 1px solid rgba(240, 186, 202, 0.45);
   border-radius: 50%;
+  background: radial-gradient(circle at 50% 30%, rgba(230, 136, 164, 0.32), rgba(255, 255, 255, 0.03) 72%);
   font-size: 24px;
-  border: 1px solid rgba(232, 201, 106, 0.4);
-  background: radial-gradient(circle at 50% 30%, rgba(212, 175, 55, 0.28), rgba(212, 175, 55, 0.04) 72%);
 }
 
 .dialog-title {
   margin: 0;
-  text-align: center;
+  color: var(--champagne-soft);
   font-size: 18px;
   font-weight: 700;
   letter-spacing: 0.14em;
-  color: #ffe9b0;
+  text-align: center;
 }
 
 .dialog-question {
   margin: 9px 0 18px;
-  text-align: center;
+  color: rgba(255, 239, 232, 0.73);
   font-size: 13.5px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.75);
+  text-align: center;
 }
 
 .dialog-form {
@@ -747,16 +787,15 @@ button {
   width: 100%;
   height: 54px;
   padding: 0 18px;
+  border: 1px solid rgba(255, 227, 220, 0.17);
   border-radius: 16px;
-  border: 1px solid rgba(255, 255, 255, 0.16);
-  background: rgba(255, 255, 255, 0.06);
-  color: #fff;
-  /* 16px 是必须的：iOS 上小于 16px 的输入框聚焦时会自动放大整个页面 */
-  font-size: 16px;
-  font-family: inherit;
-  text-align: center;
-  letter-spacing: 0.08em;
   outline: none;
+  color: #fff8f5;
+  background: rgba(255, 236, 230, 0.07);
+  font-family: inherit;
+  font-size: 16px;
+  letter-spacing: 0.08em;
+  text-align: center;
   transition:
     border-color 0.25s ease,
     background 0.25s ease,
@@ -764,20 +803,20 @@ button {
 }
 
 .dialog-input::placeholder {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 230, 224, 0.3);
   letter-spacing: 0.14em;
 }
 
 .dialog-input:focus {
-  border-color: rgba(232, 201, 106, 0.8);
-  background: rgba(232, 201, 106, 0.1);
-  box-shadow: 0 0 0 3px rgba(232, 201, 106, 0.14);
+  border-color: rgba(236, 159, 177, 0.82);
+  background: rgba(213, 124, 147, 0.12);
+  box-shadow: 0 0 0 3px rgba(213, 124, 147, 0.16);
 }
 
 .dialog-input.is-ok {
-  border-color: rgba(52, 211, 153, 0.65);
-  background: rgba(16, 185, 129, 0.14);
-  color: #d6ffe9;
+  border-color: rgba(117, 213, 175, 0.66);
+  background: rgba(69, 158, 124, 0.14);
+  color: #d5ffea;
 }
 
 .dialog-input:disabled {
@@ -785,15 +824,15 @@ button {
 }
 
 .dialog-hint {
-  margin: 14px 0 0;
-  text-align: center;
-  font-size: 11.5px;
-  color: rgba(255, 214, 140, 0.85);
   min-height: 17px;
+  margin: 14px 0 0;
+  color: rgba(255, 211, 184, 0.84);
+  font-size: 11.5px;
+  text-align: center;
 }
 
 .dialog-hint-ghost {
-  color: rgba(255, 255, 255, 0.3);
+  color: rgba(255, 239, 232, 0.3);
 }
 
 .dialog-error,
@@ -806,20 +845,20 @@ button {
   padding: 11px 14px;
   border-radius: 14px;
   font-size: 12.5px;
-  text-align: center;
   line-height: 1.5;
+  text-align: center;
 }
 
 .dialog-error {
-  color: #ffc9d3;
-  border: 1px solid rgba(255, 77, 109, 0.5);
-  background: rgba(200, 16, 46, 0.22);
+  border: 1px solid rgba(237, 112, 142, 0.5);
+  color: #ffd1dc;
+  background: rgba(166, 53, 88, 0.22);
 }
 
 .dialog-ok {
-  color: #b8f5cd;
-  border: 1px solid rgba(52, 211, 153, 0.45);
-  background: rgba(16, 185, 129, 0.18);
+  border: 1px solid rgba(117, 213, 175, 0.45);
+  color: #baf6d4;
+  background: rgba(43, 145, 103, 0.18);
 }
 
 .is-shake {
@@ -852,16 +891,17 @@ button {
 
 .pad-panel {
   width: 100%;
-  /* 手机上尽量占满宽度，签名区更大更好写 */
   max-width: 420px;
   margin: 18px auto 0;
   padding: 16px 12px 18px;
-  border-radius: 20px;
-  border: 1px solid rgba(255, 255, 255, 0.14);
-  background: rgba(255, 255, 255, 0.06);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px);
-  box-shadow: 0 18px 44px -22px rgba(0, 0, 0, 0.9);
+  border: 1px solid rgba(255, 224, 220, 0.16);
+  border-radius: 22px;
+  background: rgba(255, 235, 230, 0.07);
+  box-shadow:
+    0 20px 46px -24px rgba(0, 0, 0, 0.9),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
 }
 
 .pad-head {
@@ -873,30 +913,29 @@ button {
 }
 
 .pad-title {
+  color: var(--champagne-soft);
   font-size: 13.5px;
   font-weight: 600;
-  color: #ffe9b0;
 }
 
 .pad-tip {
+  color: rgba(255, 230, 224, 0.42);
   font-size: 10.5px;
-  color: rgba(255, 255, 255, 0.42);
 }
 
-/* 可点击的签名位：点一下放大到全屏手写 */
 .sign-slot {
   position: relative;
   display: flex;
   align-items: center;
   justify-content: center;
   width: 100%;
-  /* 和卡片签名栏的书写区保持同一比例，所见即所得 */
   aspect-ratio: 272 / 118;
   padding: 10px;
-  border-radius: 16px;
-  border: 1.5px dashed rgba(212, 175, 55, 0.55);
-  background: linear-gradient(180deg, #fffdf8 0%, #fbf4e8 100%);
-  box-shadow: inset 0 2px 10px rgba(120, 86, 20, 0.1);
+  border: 1.5px dashed rgba(231, 159, 167, 0.62);
+  border-radius: 17px;
+  outline: none;
+  background: linear-gradient(180deg, #fffdf8 0%, #f9ebe6 100%);
+  box-shadow: inset 0 2px 10px rgba(129, 73, 81, 0.1);
   cursor: pointer;
   font: inherit;
   -webkit-appearance: none;
@@ -907,9 +946,15 @@ button {
     box-shadow 0.25s ease;
 }
 
+.sign-slot:focus-visible {
+  box-shadow:
+    0 0 0 3px rgba(236, 159, 177, 0.22),
+    inset 0 2px 10px rgba(129, 73, 81, 0.1);
+}
+
 .sign-slot:active:not(:disabled) {
   transform: scale(0.985);
-  border-color: rgba(232, 201, 106, 0.9);
+  border-color: rgba(213, 124, 147, 0.96);
 }
 
 .sign-slot:disabled {
@@ -919,15 +964,15 @@ button {
 
 .sign-slot.has-ink {
   border-style: solid;
-  border-color: rgba(169, 124, 21, 0.45);
+  border-color: rgba(180, 92, 117, 0.48);
 }
 
 .sign-slot-empty {
   display: grid;
   gap: 5px;
   justify-items: center;
-  text-align: center;
   pointer-events: none;
+  text-align: center;
 }
 
 .sign-slot-icon {
@@ -936,29 +981,29 @@ button {
 }
 
 .sign-slot-text {
+  color: rgba(99, 62, 73, 0.9);
   font-size: 14px;
   font-weight: 600;
-  color: rgba(107, 92, 70, 0.9);
 }
 
 .sign-slot-sub {
+  color: rgba(136, 91, 101, 0.64);
   font-size: 11px;
-  color: rgba(140, 116, 80, 0.6);
 }
 
 .sign-slot-expand {
   position: absolute;
-  right: 8px;
   top: 8px;
+  right: 8px;
   display: grid;
   place-items: center;
   width: 26px;
   height: 26px;
+  border: 1px solid rgba(181, 95, 116, 0.3);
   border-radius: 9px;
+  color: #a65b73;
+  background: rgba(211, 123, 147, 0.14);
   font-size: 12px;
-  color: #a97c15;
-  background: rgba(212, 175, 55, 0.16);
-  border: 1px solid rgba(169, 124, 21, 0.3);
   pointer-events: none;
 }
 
@@ -975,10 +1020,10 @@ button {
 
 .pad-note {
   margin: 10px 0 0;
+  color: rgba(255, 229, 224, 0.41);
   font-size: 10.5px;
   line-height: 1.5;
   text-align: center;
-  color: rgba(255, 255, 255, 0.4);
 }
 
 .pad-actions {
@@ -988,7 +1033,6 @@ button {
 }
 
 .pad-actions .btn {
-  /* 现在是三个按钮并排（重签 / 转一下 / 确认签名）：按内容宽度排，剩下的都留给主按钮 */
   flex: 0 1 auto;
   padding: 0 15px;
   white-space: nowrap;
@@ -1003,25 +1047,22 @@ button {
    ================================================================ */
 
 .success-head {
-  text-align: center;
   margin: 18px 0 14px;
+  text-align: center;
 }
 
 .success-title {
   margin: 0;
+  color: var(--champagne-soft);
   font-size: 21px;
   font-weight: 700;
-  letter-spacing: 0.04em;
-  background: linear-gradient(120deg, #fff6cf, #e8c96a 45%, #fff3c4 65%, #c9a227);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
+  letter-spacing: 0.05em;
 }
 
 .success-sub {
   margin: 8px 0 0;
+  color: rgba(255, 230, 224, 0.62);
   font-size: 12.5px;
-  color: rgba(255, 255, 255, 0.6);
 }
 
 .result-wrap {
@@ -1047,10 +1088,10 @@ button {
   display: block;
   width: 100%;
   height: auto;
-  border-radius: 22px;
+  border-radius: 24px;
   box-shadow:
-    0 30px 70px -22px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(232, 201, 106, 0.25);
+    0 32px 74px -24px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(239, 177, 192, 0.25);
   -webkit-user-drag: none;
   user-select: none;
 }
@@ -1061,12 +1102,12 @@ button {
   right: -8px;
   padding: 6px 13px;
   border-radius: 999px;
+  color: #fff8f5;
+  background: linear-gradient(135deg, #df86a0, #873451);
+  box-shadow: 0 10px 22px -8px rgba(190, 70, 111, 0.95);
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.08em;
-  color: #fff;
-  background: linear-gradient(135deg, #e11d48, #9b0b22);
-  box-shadow: 0 10px 22px -8px rgba(200, 16, 46, 0.95);
   animation: badgePop 0.6s 0.35s cubic-bezier(0.2, 1.5, 0.4, 1) both;
 }
 
@@ -1088,12 +1129,12 @@ button {
   gap: 8px;
   margin: 18px 0 0;
   padding: 12px 14px;
-  border-radius: 14px;
-  border: 1px dashed rgba(232, 201, 106, 0.42);
-  background: rgba(212, 175, 55, 0.08);
+  border: 1px dashed rgba(239, 177, 192, 0.42);
+  border-radius: 15px;
+  color: #ffe5d2;
+  background: rgba(213, 124, 147, 0.1);
   font-size: 12.5px;
   line-height: 1.6;
-  color: #ffe9b0;
   text-align: center;
 }
 
@@ -1121,31 +1162,31 @@ button {
 
 .toast {
   position: fixed;
-  left: 50%;
   bottom: calc(env(safe-area-inset-bottom, 0px) + 34px);
+  left: 50%;
   z-index: 120;
-  transform: translateX(-50%);
   max-width: min(88vw, 360px);
   padding: 12px 18px;
   border-radius: 999px;
   font-size: 13px;
   line-height: 1.45;
   text-align: center;
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
+  transform: translateX(-50%);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
 }
 
 .toast-error {
-  color: #ffd7de;
-  border: 1px solid rgba(255, 77, 109, 0.55);
-  background: rgba(120, 12, 34, 0.9);
-  box-shadow: 0 14px 34px -12px rgba(200, 16, 46, 0.9);
+  border: 1px solid rgba(237, 112, 142, 0.55);
+  color: #ffd9e1;
+  background: rgba(121, 36, 67, 0.9);
+  box-shadow: 0 14px 34px -12px rgba(190, 64, 105, 0.9);
 }
 
 .toast-info {
-  color: #ffe9b0;
-  border: 1px solid rgba(232, 201, 106, 0.45);
-  background: rgba(40, 14, 8, 0.9);
+  border: 1px solid rgba(239, 177, 192, 0.45);
+  color: #ffe6cc;
+  background: rgba(44, 18, 38, 0.92);
   box-shadow: 0 14px 34px -12px rgba(0, 0, 0, 0.9);
 }
 
@@ -1212,7 +1253,45 @@ button {
   transform: translateX(-50%) translateY(16px);
 }
 
-/* 尊重系统"减弱动态效果" */
+/* ---------------------------------------------------------------- 手写签名全屏层（组件 scoped 样式只覆盖布局，这里统一色彩） */
+
+.sign-mask {
+  background:
+    radial-gradient(120% 60% at 50% 0%, rgba(126, 45, 83, 0.8) 0%, transparent 62%),
+    rgba(13, 5, 13, 0.95);
+}
+
+.sign-title {
+  color: var(--champagne-soft);
+}
+
+.sign-tip {
+  color: rgba(255, 230, 224, 0.54);
+}
+
+.sign-close {
+  border-color: rgba(255, 224, 220, 0.2);
+  background: rgba(255, 235, 230, 0.08);
+  color: rgba(255, 243, 238, 0.82);
+}
+
+.sign-board {
+  box-shadow:
+    0 24px 60px -24px rgba(0, 0, 0, 0.9),
+    0 0 0 1px rgba(239, 177, 192, 0.25);
+}
+
+.sign-rotate {
+  color: #6a4f5b;
+  background: rgba(255, 250, 244, 0.94);
+}
+
+.sign-rotate-icon {
+  color: var(--rose-deep);
+}
+
+/* 尊重系统“减弱动态效果” */
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -1220,5 +1299,35 @@ button {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+@media (max-width: 360px) {
+  .app-title {
+    font-size: 25px;
+  }
+
+  .stepper {
+    gap: 4px;
+    padding-right: 9px;
+    padding-left: 9px;
+  }
+
+  .stepper li {
+    font-size: 9.5px;
+  }
+
+  .stepper li + li::before {
+    width: 8px;
+    margin-right: 1px;
+  }
+
+  .pad-actions {
+    gap: 7px;
+  }
+
+  .pad-actions .btn {
+    padding: 0 11px;
+    font-size: 12px;
   }
 }

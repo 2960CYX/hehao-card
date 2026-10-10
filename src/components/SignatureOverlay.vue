@@ -128,8 +128,8 @@ function close() {
   flex-direction: column;
   padding: calc(env(safe-area-inset-top, 0px) + 14px) 14px calc(env(safe-area-inset-bottom, 0px) + 14px);
   background:
-    radial-gradient(120% 60% at 50% 0%, rgba(108, 23, 48, 0.75) 0%, rgba(108, 23, 48, 0) 60%),
-    rgba(10, 2, 5, 0.94);
+    radial-gradient(120% 60% at 50% 0%, rgba(126, 45, 83, 0.8) 0%, rgba(126, 45, 83, 0) 62%),
+    rgba(13, 5, 13, 0.95);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
 }
@@ -157,13 +157,13 @@ function close() {
   font-size: 17px;
   font-weight: 700;
   letter-spacing: 0.06em;
-  color: #ffe9b0;
+  color: #fae7c5;
 }
 
 .sign-tip {
   margin: 5px 0 0;
   font-size: 12px;
-  color: rgba(255, 255, 255, 0.5);
+  color: rgba(255, 230, 224, 0.54);
 }
 
 .sign-close {
@@ -171,9 +171,9 @@ function close() {
   width: 38px;
   height: 38px;
   border-radius: 50%;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background: rgba(255, 255, 255, 0.08);
-  color: rgba(255, 255, 255, 0.8);
+  border: 1px solid rgba(255, 224, 220, 0.2);
+  background: rgba(255, 235, 230, 0.08);
+  color: rgba(255, 243, 238, 0.82);
   font-size: 15px;
   line-height: 1;
   cursor: pointer;
@@ -194,7 +194,7 @@ function close() {
   overflow: hidden;
   box-shadow:
     0 24px 60px -24px rgba(0, 0, 0, 0.9),
-    0 0 0 1px rgba(232, 201, 106, 0.22);
+    0 0 0 1px rgba(239, 177, 192, 0.25);
 }
 
 .sign-rotate {
@@ -210,7 +210,7 @@ function close() {
   border-radius: 999px;
   white-space: nowrap;
   font-size: 12px;
-  color: #6a5946;
+  color: #6a4f5b;
   background: rgba(255, 253, 248, 0.92);
   box-shadow: 0 8px 22px -10px rgba(90, 66, 20, 0.7);
   pointer-events: none;
@@ -219,7 +219,7 @@ function close() {
 .sign-rotate-icon {
   font-size: 16px;
   line-height: 1;
-  color: #a97c15;
+  color: #a53f61;
   animation: rotateHint 2.4s ease-in-out infinite;
 }
 

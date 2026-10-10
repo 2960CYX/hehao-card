@@ -122,7 +122,7 @@ const sigHolderStyle = {
   position: absolute;
   width: 16px;
   height: 16px;
-  border: 0 solid rgba(169, 124, 21, 0.45);
+  border: 0 solid rgba(173, 91, 116, 0.45);
   pointer-events: none;
 }
 
@@ -165,11 +165,11 @@ const sigHolderStyle = {
   font-weight: 700;
   letter-spacing: 4px;
   text-indent: 4px;
-  background: linear-gradient(180deg, #fff6cf 0%, #e6c86a 30%, #b98f16 52%, #f7e7ae 72%, #a97c15 100%);
+  background: linear-gradient(180deg, #fff4df 0%, #e3aa96 30%, #a85a76 52%, #f7d7c0 72%, #93435f 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
-  filter: drop-shadow(0 1px 0.6px rgba(120, 86, 20, 0.34));
+  filter: drop-shadow(0 1px 0.6px rgba(117, 65, 82, 0.34));
 }
 
 .mk-subtitle {
@@ -182,7 +182,7 @@ const sigHolderStyle = {
   font-weight: 600;
   letter-spacing: 2.4px;
   text-indent: 2.4px;
-  color: rgba(107, 92, 70, 0.72);
+  color: rgba(117, 91, 102, 0.72);
 }
 
 .mk-rule {
@@ -190,7 +190,7 @@ const sigHolderStyle = {
   left: 26px;
   right: 26px;
   height: 0;
-  border-top: 1px dashed rgba(169, 124, 21, 0.45);
+  border-top: 1px dashed rgba(173, 91, 116, 0.45);
 }
 
 .mk-rule i {
@@ -201,8 +201,8 @@ const sigHolderStyle = {
   font-style: normal;
   font-size: 9px;
   line-height: 1;
-  color: #d4af37;
-  background: #fdf7ec;
+  color: #c46b85;
+  background: #fff8f2;
   padding: 0 3px;
 }
 
@@ -216,7 +216,7 @@ const sigHolderStyle = {
   font-weight: 600;
   letter-spacing: 1.4px;
   text-indent: 1.4px;
-  color: rgba(107, 92, 70, 0.78);
+  color: rgba(117, 91, 102, 0.78);
 }
 
 .mk-holder {
@@ -231,13 +231,13 @@ const sigHolderStyle = {
 .mk-holder-label {
   line-height: 1;
   font-weight: 500;
-  color: rgba(107, 92, 70, 0.82);
+  color: rgba(117, 91, 102, 0.82);
 }
 
 .mk-holder-name {
   line-height: 1;
   font-weight: 700;
-  color: #2a2118;
+  color: #2b1d25;
 }
 
 .mk-dotrule {
@@ -245,7 +245,7 @@ const sigHolderStyle = {
   left: 26px;
   right: 26px;
   height: 0;
-  border-top: 1px dotted rgba(140, 116, 80, 0.5);
+  border-top: 1px dotted rgba(117, 91, 102, 0.5);
 }
 
 .mk-message {
@@ -262,20 +262,20 @@ const sigHolderStyle = {
   font-weight: 700;
   letter-spacing: 3px;
   text-indent: 3px;
-  color: #2a2118;
+  color: #2b1d25;
 }
 
 .mk-message-deco {
   font-size: 0.4em;
   line-height: 1;
-  color: #d4af37;
+  color: #c46b85;
   text-indent: 0;
 }
 
 .mk-sig {
   position: absolute;
   border-radius: 10px;
-  border: 1px dashed rgba(140, 116, 80, 0.55);
+  border: 1px dashed rgba(117, 91, 102, 0.5);
 }
 
 .mk-sig-label {
@@ -284,7 +284,7 @@ const sigHolderStyle = {
   top: 7px;
   line-height: 1;
   font-weight: 500;
-  color: rgba(140, 116, 80, 0.78);
+  color: rgba(117, 91, 102, 0.78);
 }
 
 .mk-sig-ghost {
@@ -295,7 +295,7 @@ const sigHolderStyle = {
   text-align: center;
   font-size: 12px;
   letter-spacing: 0.3em;
-  color: rgba(140, 116, 80, 0.32);
+  color: rgba(117, 91, 102, 0.32);
 }
 
 /* 预印签名：等比放进签名栏的书写区 */
@@ -323,12 +323,12 @@ const sigHolderStyle = {
   justify-content: space-between;
   line-height: 1;
   font-weight: 500;
-  color: rgba(107, 92, 70, 0.8);
+  color: rgba(117, 91, 102, 0.8);
 }
 
 .mk-meta-right {
   font-weight: 700;
-  color: #a97c15;
+  color: #9e4e6b;
 }
 
 .mk-foot {
@@ -339,6 +339,6 @@ const sigHolderStyle = {
   text-align: center;
   line-height: 1;
   font-weight: 500;
-  color: rgba(107, 92, 70, 0.62);
+  color: rgba(117, 91, 102, 0.62);
 }
 </style>

@@ -41,7 +41,7 @@ const SERIF = '"Noto Serif SC","Source Han Serif SC","Songti SC","STSong",serif'
 const SANS =
   '"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Heiti SC","Noto Sans SC",system-ui,sans-serif'
 
-const SEAL_RED = '#c8102e'
+const SEAL_RED = '#a83f62'
 
 /* ------------------------------------------------------------------ 基础图形 */
 
@@ -92,7 +92,7 @@ function drawSpaced(
 function dashedRule(ctx: CanvasRenderingContext2D, x1: number, y: number, x2: number) {
   ctx.save()
   ctx.setLineDash([3, 3])
-  ctx.strokeStyle = 'rgba(169,124,21,0.45)'
+  ctx.strokeStyle = 'rgba(173,91,116,0.45)'
   ctx.lineWidth = 0.9
   ctx.beginPath()
   ctx.moveTo(x1, y)
@@ -105,7 +105,7 @@ function dottedRule(ctx: CanvasRenderingContext2D, x1: number, y: number, x2: nu
   ctx.save()
   ctx.setLineDash([1, 2.6])
   ctx.lineCap = 'round'
-  ctx.strokeStyle = 'rgba(140,116,80,0.5)'
+  ctx.strokeStyle = 'rgba(117,91,102,0.5)'
   ctx.lineWidth = 0.9
   ctx.beginPath()
   ctx.moveTo(x1, y)
@@ -153,13 +153,13 @@ function drawPaper(ctx: CanvasRenderingContext2D) {
 
   // 右上暖光
   const warm = ctx.createRadialGradient(CARD_W * 0.84, CARD_H * 0.08, 6, CARD_W * 0.84, CARD_H * 0.08, 230)
-  warm.addColorStop(0, 'rgba(255,206,120,0.28)')
-  warm.addColorStop(1, 'rgba(255,206,120,0)')
+  warm.addColorStop(0, 'rgba(244,172,164,0.22)')
+  warm.addColorStop(1, 'rgba(244,172,164,0)')
   ctx.fillStyle = warm
   ctx.fillRect(0, 0, CARD_W, CARD_H)
 
   // 纸张纤维
-  ctx.fillStyle = 'rgba(120,95,60,0.05)'
+  ctx.fillStyle = 'rgba(117,91,102,0.045)'
   for (let i = 0; i < 280; i++) {
     ctx.fillRect(Math.random() * CARD_W, Math.random() * CARD_H, 0.7, 0.7)
   }
@@ -167,16 +167,16 @@ function drawPaper(ctx: CanvasRenderingContext2D) {
 
   // 烫金外框
   const gold = ctx.createLinearGradient(0, 0, CARD_W, CARD_H)
-  gold.addColorStop(0, '#f7e29a')
-  gold.addColorStop(0.32, '#c9a227')
-  gold.addColorStop(0.52, '#fff3c4')
-  gold.addColorStop(1, '#a97c15')
+  gold.addColorStop(0, '#f6d2bf')
+  gold.addColorStop(0.32, '#b76d83')
+  gold.addColorStop(0.52, '#ffe9d0')
+  gold.addColorStop(1, '#9e4e6b')
   ctx.strokeStyle = gold
   ctx.lineWidth = 2.4
   roundedPath(ctx, 1.4, 1.4, CARD_W - 2.8, CARD_H - 2.8, 21)
   ctx.stroke()
 
-  ctx.strokeStyle = 'rgba(169,124,21,0.42)'
+  ctx.strokeStyle = 'rgba(173,91,116,0.36)'
   ctx.lineWidth = 0.8
   roundedPath(ctx, 7.5, 7.5, CARD_W - 15, CARD_H - 15, 15)
   ctx.stroke()
@@ -186,7 +186,7 @@ function drawOrnaments(ctx: CanvasRenderingContext2D) {
   const m = 15
   const len = 16
   ctx.save()
-  ctx.strokeStyle = 'rgba(169,124,21,0.45)'
+  ctx.strokeStyle = 'rgba(173,91,116,0.45)'
   ctx.lineWidth = 1
   const corners: Array<[number, number, number, number]> = [
     [m, m, 1, 1],
@@ -210,11 +210,11 @@ function drawHeader(ctx: CanvasRenderingContext2D, serial: string) {
   ctx.save()
 
   const goldText = ctx.createLinearGradient(0, LAYOUT.titleTop, 0, LAYOUT.titleTop + LAYOUT.titleSize)
-  goldText.addColorStop(0, '#fff6cf')
-  goldText.addColorStop(0.3, '#e6c86a')
-  goldText.addColorStop(0.52, '#b98f16')
-  goldText.addColorStop(0.72, '#f7e7ae')
-  goldText.addColorStop(1, '#a97c15')
+  goldText.addColorStop(0, '#fff4df')
+  goldText.addColorStop(0.3, '#e3aa96')
+  goldText.addColorStop(0.52, '#a85a76')
+  goldText.addColorStop(0.72, '#f7d7c0')
+  goldText.addColorStop(1, '#93435f')
 
   ctx.font = `700 ${LAYOUT.titleSize}px ${SERIF}`
   ctx.textAlign = 'center'
